@@ -1,0 +1,67 @@
+﻿
+<div data-title="A Complete Example">
+
+    <p>
+        This is a more complete example illustrating how a list of tasks would be displayed.  
+    </p>   
+
+    <span class="tag">Controller - "/controllers/task.js"</span>
+    <pre class="brush: js">
+        
+        var TaskController = new Controller("task", {
+
+            list: new Action({
+                require: { //JQuery UI is required for view, ensure it's loaded
+                    scripts: "jqueryui", //Load script file
+                    styles: "jqueryui" //Load style sheet
+                },
+                remote: "/api/tasks", //Get data from remote URL
+                view: "list", //Load view template and merge with data
+                model: TaskList, //Use this model
+                updater: "content", //Update the result in the main content area
+                title: "My Tasks", //Update page title
+                address: "/Tasks" //Set current address for deep linking
+            }),
+
+        });
+
+    </pre>
+    
+    <span class="tag">Model - "/models/tasks.js"</span>
+    <pre class="brush: js">
+        //Merge response data with client model
+        var TaskList = function(data) {
+            $(data.tasks).each(function() {
+                //Add additional properties as needed
+                this.url = "/task/details/" + this.id;
+                this.color = (this.priority == "High" ? "red" ? "blue");
+            })
+        };
+    </pre>
+
+    <span class="tag">Server Response - "/api/tasks"</span>
+    <pre class="brush: js">
+        {
+            total: 2,
+            tasks [
+                { id: 123, title: "First Task", priority: "High" },
+                { id: 456, title: "Second Task", priority: "Low" },
+            ]
+        }
+    </pre>
+
+    <span class="tag">View Template - "/views/tasks/list.html"</span>
+    <pre class="brush: xml">
+        
+        <div id="task-list">
+            {total} tasks found.
+            <div go-each="tasks" id="task-{id}">
+                <a href="/task/details/{id}">Details</a>
+                <h3>{title}</h3> - <span>{priority}</span>
+            </div>
+        </div>
+
+    </pre>
+
+
+</div>

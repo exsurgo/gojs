@@ -1,0 +1,66 @@
+﻿
+<div data-title="Navigation">
+
+    <!--Relative Links-->
+    <h4>Links</h4>
+    <p>
+        All relative links are automatically hijaxed.  When clicked, a request is made, and a partial HTML update is returned.
+    </p>
+    <p>
+        Note that all links can be hijaxed, or only selective ones via <em>data-ajax="true"</em>.  
+        Also note that links are automatically converted to "ajax links" with hash URLs.
+    </p>   
+    <pre class="brush: xml;">
+        <a href-temp="/example">Click Me</a>
+    </pre>
+
+    <hr />   
+
+    <!--External Links-->
+    <h4>External Links</h4>
+    <p>
+        External links are not hijaxed.  They also open in a new window. (<em>target="_blank"</em>)
+    </p>
+    <pre class="brush: xml;">
+        <a href-temp="http://google.com">Click Me</a>
+    </pre>
+
+    <hr />
+
+    <!--Relative Links - New Window-->
+    <h4>Relative Links - New Window</h4>
+    <p>
+        All relative links with <em>target="_blank"</em> should open in new window.
+    </p>
+    <pre class="brush: xml;">
+        <a href="/" target="_blank">Click Me</a>
+    </pre>
+
+    <hr />
+    
+    <!--Form Posts-->
+    <h4>Form Posts</h4>
+    <p>
+        Forms are also automatically hijaxed.  Forms are also temporarily disabled to prevent double submits.
+        The form submit below would automatically serialize the form, and route the values to the task controller
+        and save action.  Submits are local only unless a "remote" property is specified on the controller.
+    </p>
+    <pre class="brush: xml;">
+        <form method="post" action="/task/save">
+            <input type="text" name="title" />
+            <button type="submit">Save</button>
+        </form>
+    </pre>
+
+    <hr class="line" />
+
+    <!--Loading Indicator-->
+    <h4>Loading Indicator</h4>
+    <p>
+        The framework also handles displaying the Ajax loading indicator to the user.  
+    </p>
+    <a href="javascript:Go.loading.show();">Show Loading Indicator</a> | 
+    <a href="javascript:Go.loading.hide();">Hide Loading Indicator</a>
+
+
+</div>

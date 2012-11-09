@@ -1,0 +1,15 @@
+﻿
+/* page */
+html, body { margin: 0px; padding: 0px; height: 100%; }
+body { padding-top: 60px; padding-bottom: 40px; min-width: 800px; } /* TODO: Add responsive design */
+
+/* side bar */
+.sidebar-nav { padding: 9px 0; }
+
+/* tag - used above code sections */
+.tag { font-size: .8em; color: #777; display: inline-block; margin-top: 4px; }
+
+/* progress indicator */
+.loading-indicator { width: 55px; height: 55px; opacity: 0.4; filter: alpha(opacity=40); text-align: center; z-index: 9999999; background: url(/gojs/site/images/loading.gif) no-repeat center center; }​
+
+
