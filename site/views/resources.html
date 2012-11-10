@@ -1,0 +1,50 @@
+﻿
+<div data-title="Resource Loading">
+
+    <h2>Resource Loading</h2>
+
+    <p>
+        Since web apps are becoming more complex every day, it becomes necessary to dynamically load resources
+        on-demand. GoJS supports lazy-loading various resources such as scripts, styles, views and images.
+    </p>
+
+    <hr />
+
+    <h4>Loading via Go.require()</h4>
+    <p>
+        You can load resources using the <b>require</b> method like so.  The callback is ran once all resources
+        have been loaded.  In the example below, "/scripts/jqueryui.js" and "/styles/jqueryui.css" or loaded
+        dynamically.  The routes can be customized in the config so the entire paths do not need to be specified
+        each time.
+    </p>
+    <pre class="brush: js">
+        Go.require({ 
+            scripts: "jqueryui", 
+            styles: "jqueryui" 
+        }, 
+        function() {
+            alert("jQuery UI has been loaded!");
+        });
+    </pre>
+
+    <hr />
+
+    <h4>Loading via Actions</h4>
+    <p>You can also load</p>
+    <pre class="brush: js">
+        var TaskController = new Controller("task", {
+
+            list: new Action({
+                require: {
+                    scripts: "jqueryui",
+                    styles: "jqueryui",
+                }, 
+                run: function() {
+                    alert("jQuery UI has been loaded");
+                }
+            });
+        
+        });
+    </pre>
+
+</div>

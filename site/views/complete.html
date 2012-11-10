@@ -11,16 +11,16 @@
         var TaskController = new Controller("task", {
 
             list: new Action({
-                require: { //JQuery UI is required for view, ensure it's loaded
-                    scripts: "jqueryui", //Load script file
-                    styles: "jqueryui" //Load style sheet
+                require: {                  //JQuery UI is required for view, ensure it's loaded
+                    scripts: "jqueryui",    //Load script file
+                    styles: "jqueryui"      //Load style sheet
                 },
-                remote: "/api/tasks", //Get data from remote URL
-                view: "list", //Load view template and merge with data
-                model: TaskList, //Use this model
-                updater: "content", //Update the result in the main content area
-                title: "My Tasks", //Update page title
-                address: "/Tasks" //Set current address for deep linking
+                remote: "/api/tasks",       //Get data from remote URL
+                view: "list",               //Load view template and merge with data
+                model: TaskList,            //Use this model
+                updater: "content",         //Update the result in the main content area
+                title: "My Tasks",          //Update page title
+                address: "/Tasks"           //Set current address for deep linking
             }),
 
         });

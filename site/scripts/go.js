@@ -1,6 +1,6 @@
 
 /*
-*   GoJS 0.7.6.7
+*   GoJS 0.7.6.8
 *   Dependencies: jQuery 1.5+
 *
 *   GoJS is a full-featured MVC framework that provides support for controllers, actions, views, models, routing,
@@ -22,6 +22,11 @@
     var Action = function (options) {
         this.init(options);
         return this;
+    };
+
+    //ActionEvent
+    var ActionEvent = function (props) {
+
     };
 }
 

@@ -6,13 +6,13 @@
     <p>
         The basic functionality revolves around controllers, actions and routes.  GoJS automatically activates
         links and forms, and routes them to controller actions.  The default route is <b>{controller}/{action}</b>.
-        URL's that match a route are routed to a controller action.  An action in GoJS is a configuration, not a 
-        function.  This helps to reuse functionality and reduce code.
+        URL's that match a route are routed to a controller action.  An Action object in GoJS defines the behavior
+        for an action through configuration rather than raw code.  This helps to reuse functionality and reduce code.
     </p>
     <p>
         In the below example, when a user clicks the below link, the click is intercepted by GoJS and matched against
         the default route.  So the URL <b>/hello/say</b> matches the route <b>/{controller}/{action}</b>, which 
-        resolves to <b>HelloController.say</b> action.  The say action has two properties, "remote" which is the 
+        resolves to <b>HelloController.say</b> action.  The "say" action has two properties, "remote" which is the 
         remote URL to request, and "response" which is an event to handle the response.
     </p>
     
@@ -33,7 +33,7 @@
             say: new Action({
                 remote: "/helloworld.json",
                 response: function(e) {
-                    alert(e.data);
+                    alert(e.data.message);
                 }
             })
 

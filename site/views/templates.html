@@ -4,7 +4,60 @@
     <h2>Templates</h2>
 
     <p>
-        Coming soon...
+        GoJS includes a full template rendering engine.  The following syntaxes are supported.
     </p>
+
+    <hr />
+
+    <h4>Inserting Values</h4>
+
+    <span class="tag">Insert Value</span>
+    <pre class="brush: xml">
+        <span>{title}</span>
+    </pre>
+
+    <hr />
+
+    <h4>Conditionals</h4>
+
+    <span class="tag">If/Else via Tags</span>
+    <pre class="brush: xml">
+        {? isTrue}
+            <span>Its true</span>
+        {:}
+            <span>Its false</span>
+        {/?}
+    </pre>
+    <span class="tag">If/Else via Attributes</span>
+    <pre class="brush: xml">
+        <span if="isTrue">Its true</span>
+        <span if="!isTrue">Its false</span>
+    </pre>
+
+    <hr />
+
+    <h4>Looping</h4>
+
+    <span class="tag">Each via Tags</span>
+    <pre class="brush: xml">
+        {~ items}
+            <span>{title}</span>
+        {/~}
+    </pre>
+    <span class="tag">Each via Attributes</span>
+    <pre class="brush: xml">
+        <span each="items">{title}</span>
+    </pre>
+
+    <hr />
+
+    <h4>Child Templates</h4>
+
+    <span class="tag">Render the child template "child-template"</span>
+    <pre class="brush: xml">
+        <div>
+            {> "child-template", this}
+        </div>
+    </pre>
 
 </div>
