@@ -55,6 +55,14 @@ Go.on("activate", function (e) {
             $("code:contains(head-temp)").text("head");
             $("code:contains(html-temp)").text("html");
             $("code:contains(href-temp)").text("href");
+            //Remote empty attributes 'attr=""'
+            $("code:contains(=)").each(function () {
+                var el = $(this), sibling = el.next();
+                if (sibling.text() == '""') {
+                    el.remove();
+                    sibling.remove();
+                }
+            });
             code.show();
         });
     }
@@ -73,7 +81,7 @@ Go.on("complete", function (e) {
 });
 
 //Auto-load controllers
-Go.on("start", function (e) {
+Go.on("run", function (e) {
 
     var ctrl = e.values.controller, action = e.values.action;
     if (ctrl && action) e.require = "controllers/" + ctrl;

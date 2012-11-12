@@ -1,39 +1,40 @@
 ﻿
 <div data-title="Navigation">
 
-    <!--Relative Links-->
+    <h1>Navigation</h1>
+
+    <p>
+        There are various ways that controller actions can be called.
+    </p>
+    
+    <hr />
+
     <h4>Links</h4>
     <p>
-        All relative links are automatically hijaxed.  When clicked, a request is made, and a partial HTML update is returned.
+        Links are automatically "activated" after page loads and dynamic <a href="/updates">updates</a>.  
+        Link clicks are intercepted and routed to the appropriate controller action.
     </p>
     <p>
-        Note that all links can be hijaxed, or only selective ones via <em>data-ajax="true"</em>.  
-        Also note that links are automatically converted to "ajax links" with hash URLs.
+        By default all links and forms are activated, but this can be changed via the <b>autoActivateViews</b>
+        config property.  You can also tag links and forms with the <b>go-activate</b> and <b>go-deactivate</b>
+        attributes to control this behavior. 
     </p>   
     <pre class="brush: xml;">
-        <a href-temp="/example">Click Me</a>
+        <a href-temp="/example" go-activate>Click Me</a>
     </pre>
 
-    <hr />   
-
-    <!--External Links-->
-    <h4>External Links</h4>
     <p>
-        External links are not hijaxed.  They also open in a new window. (<em>target="_blank"</em>)
+        External links are not activated.  They also open in a new window. (<em>target="_blank"</em>)
     </p>
     <pre class="brush: xml;">
         <a href-temp="http://google.com">Click Me</a>
     </pre>
 
-    <hr />
-
-    <!--Relative Links - New Window-->
-    <h4>Relative Links - New Window</h4>
     <p>
-        All relative links with <em>target="_blank"</em> should open in new window.
+        All relative links with <em>target="_blank"</em> will open in new window.
     </p>
     <pre class="brush: xml;">
-        <a href="/" target="_blank">Click Me</a>
+        <a href-temp="/" target="_blank">Click Me</a>
     </pre>
 
     <hr />
@@ -41,15 +42,63 @@
     <!--Form Posts-->
     <h4>Form Posts</h4>
     <p>
-        Forms are also automatically hijaxed.  Forms are also temporarily disabled to prevent double submits.
-        The form submit below would automatically serialize the form, and route the values to the task controller
-        and save action.  Submits are local only unless a "remote" property is specified on the controller.
+        Forms are also automatically activated.  Forms are also temporarily disabled to prevent double 
+        submits. The form submit below would automatically serialize the form, and route the values to the 
+        <b>TaskController.save</b> action.  
     </p>
     <pre class="brush: xml;">
-        <form method="post" action="/task/save">
+        <form action="/task/save">
             <input type="text" name="title" />
             <button type="submit">Save</button>
         </form>
     </pre>
+    <p>
+        By default, all form submits are local only.   You can submit a remote post by specifying the 
+        <b>remote</b> property on the action.
+    </p>
+    <pre class="brush: js">
+        var TaskController = new Controller({
+
+            save: new Action({
+                remote: "/api/task/save",       //Post data to remote server
+                success: function(e) {          //Operation was successful
+                    alert("Task was saved");
+                },
+                error: function(e) {            //Operation returned an error
+                    alert(e.data.error);
+                }
+            })
+
+        });
+    </pre>
+
+    <hr />
+
+    <h4>Running Actions</h4>
+    <p>
+        Actions can run actions manually by either calling <b>Go.run(ctrlName, actionName, values)</b> or by
+        calling the method directly from the controller.  You can also pass a set of values to action, which
+        can be accessed using <b>e.values</b>.
+    </p>
+    <pre class="brush: js">
+        //Create controller
+        TaskController = new Controller("task", {
+            list: function(e) {
+                alert("User ID is " + e.values.userId; 
+            }
+        });
+        
+        //Call using Go.run()
+        Go.run("task", "list", { userId: 123 });
+
+        //Call directly 
+        TaskController.list({ userId: 123 });
+    </pre>
+
+    <p>
+        The advantage of using Go.run() is that the controller does not yet need to be loaded.  If you are 
+        automatically loading resources, then you can load controllers in a global <b>run</b> event by 
+        adding a require object to the current event.  
+    </p>
 
 </div>

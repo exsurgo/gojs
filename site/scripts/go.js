@@ -1,6 +1,6 @@
 
 /*
-*   GoJS 0.7.6.8
+*   GoJS 0.7.7
 *   Dependencies: jQuery 1.5+
 *
 *   GoJS is a full-featured MVC framework that provides support for controllers, actions, views, models, routing,
@@ -52,7 +52,7 @@ Go = (function () {
             //Routes
             routes: [],
             //Settings
-            autoEvents: true, //Automatically hijax every link and form
+            autoActivateViews: true, //Automatically activate every link and form
             autoCorrectLinks: true, //Change standard URL's to ajax (#) URL's
             contentSelector: "[go-content]", //The main content area
             defaultContentUrl: null, //URL to request if content area is empty on page load
@@ -83,7 +83,7 @@ Go = (function () {
                     action: actionName
                 })
             };
-            handleStart(e);
+            handleRun(e);
         };
 
         //Get
@@ -262,7 +262,7 @@ Go = (function () {
             onAddressChange(function (address) {
                 //If address is not current address and isn't held, then start
                 if (address != _requestHold && address != _currentAddress)
-                    handleStart({ url: address });
+                    handleRun({ url: address });
             });
 
             //Create event object (e)
@@ -286,7 +286,7 @@ Go = (function () {
                 //Don't start if url is held
                 if (_requestHold == e.url) _requestHold = null;
                 //Goto start
-                else handleStart(e);
+                else handleRun(e);
             });
 
             //Request default content URL if nothing is being requested and content is empty
@@ -294,13 +294,13 @@ Go = (function () {
             setTimeout(function () {
                 var url = _config.defaultContentUrl;
                 if (url && !Go.isRequesting && !_content.find("*").length) {
-                    handleStart({ url: url });
+                    handleRun({ url: url });
                 }
             }, 500);
 
         }
 
-        function handleStart(e) {
+        function handleRun(e) {
 
             if (e.url) {
 
@@ -312,8 +312,8 @@ Go = (function () {
 
             };
 
-            //EVENT: start
-            triggerEvents("start", e);
+            //EVENT: run
+            triggerEvents("run", e);
 
             //Load all resources
             requireAll(e, function () {
@@ -324,48 +324,22 @@ Go = (function () {
                     //Load all resources
                     requireAll(e, function () {
 
-                        //Run action if found
-                        if (e.action) runNextHandler(handleRunAction, e);
+                        //If "action.remote" then make request
+                        //Assume all other actions are local otherwise
+                        //TODO: Add global config to set all remote
+                        if (e.action.remote) runNextHandler(handleRequest, e);
 
-                        //Else, just make remote request
-                        else runNextHandler(handleRequest, e);
+                        //If not remote, the just goto render
+                        else runNextHandler(handleRender, e);
 
                     });
 
                 }
 
-                //Else, just make the request
-                else runNextHandler(handleRequest, e);
+                //Show error if action not found
+                else showError("Action \"" + e.values.action + "\" on controller \"" + e.values.controller + "\" was not found.");
 
             });
-
-        }
-
-        function handleRunAction(e) {
-
-            //Run action if found
-            if (e.action || tryLocateAction(e)) {
-
-                //EVENT: run
-                triggerEvents("run", e);
-
-                //Load resources
-                requireAll(e, function () {
-
-                    //If "action.remote" then goto request
-                    //Assume all other actions are local otherwise
-                    //TODO: Add global config to set all remote
-                    if (e.action.remote) runNextHandler(handleRequest, e);
-
-                    //If not remote, the just goto render
-                    else runNextHandler(handleRender, e);
-
-                });
-
-            }
-
-            //Show error if action not found
-            else showError("Action \"" + e.values.action + "\" on controller \"" + e.values.controller + "\" was not found.");
 
         }
 
@@ -747,7 +721,7 @@ Go = (function () {
             }
 
             //Link click
-            $(_config.autoEvents ? "a:not([href=#],[href^=#],[href^=javascript],[href^=mailto],[data-ajax=false],[data-submit])" : "a:[data-ajax=true]", element).each(function () {
+            $(_config.autoActivateViews ? "a:not([href=#],[href^=#],[href^=javascript],[href^=mailto],[go-deactivate])" : "a:[go-activate]", element).each(function () {
                 //Get link
                 var link = $(this);
                 var url = link.attr("href");
@@ -782,14 +756,14 @@ Go = (function () {
                         sender: link,
                         clickEvent: clickEvent
                     };
-                    //Start process
-                    handleStart(e);
+                    //Run action
+                    handleRun(e);
                     return false;
                 });
             });
 
             //Form submit
-            $(_config.autoEvents ? "form:not([data-ajax=false])" : "form:[data-ajax=true]", element).submit(function (submitEvent) {
+            $(_config.autoActivateViews ? "form:not([go-deactivate])" : "form:[go-activate]", element).submit(function (submitEvent) {
                 //Prevent duplicate requests
                 if (preventDoubleClick()) return false;
                 //Get form
@@ -811,13 +785,13 @@ Go = (function () {
                 e.postData = form.find(":input").not(_config.submitFilter).serializeArray();
                 //Disable form
                 toggleSender(form, false);
-                //Post request
-                handleStart(e);
+                //Run action
+                handleRun(e);
                 return false;
             });
 
             //Submit button click
-            $(_config.autoEvents ? ":submit:not([data-ajax=false])" : ":submit[data-ajax=true]", element).click(function (e) {
+            $(_config.autoActivateViews ? ":submit:not([go-deactivate])" : ":submit[go-activate]", element).click(function (e) {
                 //Prevent default
                 e.preventDefault();
                 var form = $(this).parents("form:first");
@@ -841,8 +815,8 @@ Go = (function () {
                         sender: el,
                         clickEvent: clickEvent
                     };
-                //Start process
-                handleStart(e);
+                //Run action
+                handleRun(e);
                 return false;
             });
 

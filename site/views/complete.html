@@ -1,9 +1,16 @@
 ﻿
 <div data-title="A Complete Example">
 
+    <h1>Complete Example</h1>
     <p>
         This is a more complete example illustrating how a list of tasks would be displayed.  
     </p>   
+
+    <p>
+        Actions are configurable objects that defines a set of behaviors.  The reduces the need for 
+        repetitive code, and speeds up development.  The action below defines the required resources, remote
+        URL, view, model, updater, title and address.
+    </p>
 
     <span class="tag">Controller - "/controllers/task.js"</span>
     <pre class="brush: js">
@@ -27,34 +34,47 @@
 
     </pre>
     
-    <span class="tag">Model - "/models/tasks.js"</span>
-    <pre class="brush: js">
-        //Merge response data with client model
-        var TaskList = function(data) {
-            $(data.tasks).each(function() {
-                //Add additional properties as needed
-                this.url = "/task/details/" + this.id;
-                this.color = (this.priority == "High" ? "red" ? "blue");
-            })
-        };
-    </pre>
+    <p>
+        Data is retrieved from the server via the <b>remote</b> property on the action.  Requests
+        are automatically made to the server.
+    </p>
 
     <span class="tag">Server Response - "/api/tasks"</span>
     <pre class="brush: js">
         {
-            total: 2,
-            tasks [
+            tasks: [
                 { id: 123, title: "First Task", priority: "High" },
                 { id: 456, title: "Second Task", priority: "Low" },
-            ]
+            ],
+            page: 1,
+            pageSize: 10
         }
     </pre>
 
+    <p>
+        Models can be functions or objects.  If its an object, then its merged with any remote data.  If its
+        a function, then it is executed with the response data as the first argument.
+    </p>
+
+    <span class="tag">Model - "/models/tasks.js"</span>
+    <pre class="brush: js">
+        //Add any custom properties to response data
+        var TaskList = function(data) {
+            data.count = data.tasks.length;
+            return data;
+        };
+    </pre>
+
+    <p>
+        Views are automatically retrieved, cached and rendered with data. The view is then updated in the DOM
+        with an updater specified by the action's <b>updater</b> property.  The page title and address are
+        also updated along with the view.
+    </p>
     <span class="tag">View Template - "/views/tasks/list.html"</span>
     <pre class="brush: xml">
         
         <div id="task-list">
-            {total} tasks found.
+            {count} tasks found.
             <div go-each="tasks" id="task-{id}">
                 <a href="/task/details/{id}">Details</a>
                 <h3>{title}</h3> - <span>{priority}</span>

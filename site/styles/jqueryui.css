@@ -99,8 +99,8 @@
 .ui-datepicker .ui-datepicker-header { position: relative; padding: .2em 0; }
 .ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next { position: absolute; top: 2px; width: 20px; height: 20px; }
 .ui-datepicker .ui-datepicker-prev-hover, .ui-datepicker .ui-datepicker-next-hover { top: 2px; }
-.ui-datepicker .ui-datepicker-prev { left: 2px; background: #ffffff url(/Images/prev.png) no-repeat 3px 3px; cursor: pointer; }
-.ui-datepicker .ui-datepicker-next { right: 2px; background: #ffffff url(/Images/next.png) no-repeat 4px 3px; cursor: pointer; }
+.ui-datepicker .ui-datepicker-prev { left: 2px; background: #ffffff url(../Images/prev.png) no-repeat 3px 3px; cursor: pointer; }
+.ui-datepicker .ui-datepicker-next { right: 2px; background: #ffffff url(../Images/next.png) no-repeat 4px 3px; cursor: pointer; }
 .ui-datepicker .ui-icon { text-indent: -300px; }
 .ui-datepicker .ui-datepicker-prev-hover { left: 2px; cursor: hand; }
 .ui-datepicker .ui-datepicker-next-hover { right: 2px; cursor: hand; }
@@ -125,10 +125,10 @@
 
 /* Dialog */
 .ui-dialog { position: absolute; width: 300px; overflow: hidden; border: 1px solid #aaaaaa; background-color: #ffffff; max-width: 850px; -moz-box-shadow: 0px 0px 2px 1px #aaaaaa; -webkit-box-shadow: 0px 0px 2px 1px #aaaaaa; box-shadow: 0px 0px 2px 1px #aaaaaa; }
-.ui-dialog .ui-dialog-titlebar { padding: 6px 10px 6px 10px; background: #eeeeee url(/Images/Grad.png) repeat-x center; border: 1px solid #aaaaaa; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.ui-dialog .ui-dialog-titlebar { padding: 6px 10px 6px 10px; background: #eeeeee url(../images/grad.png) repeat-x center; border: 1px solid #aaaaaa; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
 .ui-dialog .ui-dialog-title { float: left; font-size: .9em; font-weight: bold; padding-left: 8px; }
 .ui-dialog .ui-dialog-title img { width: 16; height: 16; position: relative; top: -2px; margin-right: 5px; }
-.ui-dialog .ui-dialog-titlebar-close { float: right; width: 25px; height: 19px; background: url(/Images/CloseButton.gif) no-repeat left center; }
+.ui-dialog .ui-dialog-titlebar-close { float: right; width: 25px; height: 19px; background: url(../images/closebutton.gif) no-repeat left center; }
 .ui-dialog .ui-dialog-titlebar-close span { display: block; margin: 1px; cursor: pointer; }
 .ui-dialog .ui-dialog-titlebar-close:hover, .ui-dialog .ui-dialog-titlebar-close:focus { }
 .ui-dialog .ui-dialog-content { border: 0; padding: 20px; background: none; overflow: auto; zoom: 1; }

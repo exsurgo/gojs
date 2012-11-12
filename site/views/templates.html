@@ -1,7 +1,7 @@
 ﻿
 <div data-title="Templates">
 
-    <h2>Templates</h2>
+    <h1>Templates</h1>
 
     <p>
         GoJS includes a full template rendering engine.  The following syntaxes are supported.
@@ -11,11 +11,19 @@
 
     <h4>Inserting Values</h4>
 
-    <span class="tag">Insert Value</span>
+    <span class="tag">Infer value from current context</span>
     <pre class="brush: xml">
         <span>{title}</span>
     </pre>
-
+    <span class="tag">Same as above</span>
+    <pre class="brush: xml">
+        <span>{= this.title}</span>
+    </pre>
+    <span class="tag">Dot notation can be used</span>
+    <pre class="brush: xml">
+        <span>{title.toLowerCase()}</span>
+    </pre>
+    
     <hr />
 
     <h4>Conditionals</h4>
