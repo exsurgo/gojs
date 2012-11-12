@@ -54,7 +54,7 @@ Go = (function () {
             //Settings
             autoEvents: true, //Automatically hijax every link and form
             autoCorrectLinks: true, //Change standard URL's to ajax (#) URL's
-            contentSelector: "#content", //The main content area where content is rendered
+            contentSelector: "[go-content]", //The main content area
             defaultContentUrl: null, //URL to request if content area is empty on page load
             submitFilter: null, //Don't submit any form elements that match this
             loadingIndicatorCSS: "", //CSS style for the loading indicator
@@ -466,6 +466,15 @@ Go = (function () {
                 isJSON: (/json/i).test(contentType)
             });
 
+            //Some other response type, Check for JSON
+            //Attempt to parse, continue on exception
+            if (!e.isHTML && !e.isJSON) {
+                try {
+                    e.data = $.parseJSON(e.data);
+                    e.isJSON = true;
+                } catch (e) { }
+            }
+
             //EVENT: response
             triggerEvents("response", e);
 
@@ -501,7 +510,7 @@ Go = (function () {
             }
 
             //JSON response
-            if (e.isJSON) {
+            else if (e.isJSON) {
 
                 //Success
                 if (e.data.success === true) runNextHandler(handleSuccess, e);
@@ -574,10 +583,7 @@ Go = (function () {
 
                 //Render the template if model is provided
                 //TODO: Should template be rendered if no model? Then view property can't be used in some cases
-                if (model) e.element = go.templates.render(view, model);
-
-                //Else just return raw HTML
-                else e.element = view;
+                e.element = go.templates.render(view, model || {});
 
                 //EVENT: render
                 triggerEvents("render", e);
@@ -647,7 +653,7 @@ Go = (function () {
             //TODO: Move window to updaters
             if (!isUpdated) {
                 switch (updaterName) {
-                    //Content                                                                                                                                                                                                                                                                                                   
+                    //Content                                                                                                                                                                                                                                                                                                        
                     /*  
                     *   title: {string} 
                     *   address: {string} 
@@ -664,11 +670,11 @@ Go = (function () {
                         //Scroll to top by default
                         if (!updateData.scroll && isFunction(scrollTo)) $(window).scrollTop(0);
                         break;
-                    //Replace                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+                    //Replace                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
                     case "replace":
                         $("#" + id).replaceWith(element);
                         break;
-                    //Insert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+                    //Insert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
                     /*
                     *   target: {selector}
                     */ 
@@ -676,7 +682,7 @@ Go = (function () {
                         var target = $(updateData.target);
                         target.html(element);
                         break;
-                    //Prepend                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                    //Prepend                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
                     /*
                     *   target: {selector}
                     */ 
@@ -685,7 +691,7 @@ Go = (function () {
                         if (existing.length) existing.replaceWith(element);
                         else $(updateData.target).prepend(element);
                         break;
-                    //Append                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+                    //Append                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
                     /*
                     *   target: {selector}
                     */ 
@@ -694,7 +700,7 @@ Go = (function () {
                         if (existing.length) existing.replaceWith(element);
                         else $(updateData.target).append(element);
                         break;
-                    //After                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+                    //After                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
                     /*
                     *   target: {selector}
                     */ 
@@ -702,7 +708,7 @@ Go = (function () {
                         var target = $(updateData.target);
                         target.after(element);
                         break;
-                    //Before                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+                    //Before                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
                     /*
                     *   target: {selector}
                     */ 

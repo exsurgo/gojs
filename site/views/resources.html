@@ -47,4 +47,27 @@
         });
     </pre>
 
+    <hr />
+
+    <h4>Resource Routes</h4>
+    <p>
+        You can customize the routes for resources in the config. The <b>{key}</b> param is merged with the full path
+        before the resource is loaded.
+    </p>
+    <pre class="brush: js">
+        Go.config({
+            scriptRoute: "/assets/scripts/{key}.js",
+            styleRoute: "/assets/styles/{key}.css",
+            viewRoute: "/assets/views/{key}.html",
+            imageRoute: "/assets/images/{key}"    
+        });
+
+        Go.require({
+            scripts: "myscript",    //Routes to /assets/scripts/myscript.js 
+            styles: "mystyle",      //Routes to /assets/styles/mystyle.js
+            views: "myview",        //Routes to /assets/views/myview.html
+            images: "myimage.jpg"   //Routes to /assets/images/myimage.jpg
+        });
+    </pre>
+
 </div>

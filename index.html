@@ -6,10 +6,11 @@
     <!--Basic Styles-->
     <link rel="stylesheet" href="site/styles/bootstrap.css">
     <link rel="stylesheet" href="site/styles/app.css">
-    <!--Basic Scripts-->
+    <!--Basic Scripts--> 
     <script src="site/scripts/jquery.js"></script>
     <script src="site/scripts/go.js"></script>
     <script src="site/scripts/init.js"></script> 
+    <script src="site/scripts/updaters.js"></script>
 </head>
 <body>
 
@@ -53,16 +54,19 @@
               <li class="nav-header">Advanced</li>
               <li><a href="/resources">Loading Resources</a></li>
               <li><a href="/templates">Templates</a></li>
-              <li><a href="/updaters">Updaters</a></li>
+              <li><a href="/updates">Updates</a></li>
               <li><a href="/routing">Routing</a></li>
+              <li><a href="/events">Events</a></li>
+              <li><a href="/loadingindicator">Loading Indicator</a></li>
               <li class="nav-header">Misc</li>
               <li><a href="/todomvc">TodoMVC Example</a></li>
+              <li><a href="/api">API</a></li>
             </ul>
           </div>
         </div>
 
         <!--Main Content-->
-        <div id="content" class="span10"></div>
+        <div go-content class="span10"></div>
 
       </div>
 

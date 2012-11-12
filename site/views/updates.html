@@ -1,0 +1,83 @@
+﻿
+<div data-title="Updates">
+
+    <h2>Updates</h2>
+
+    <p>
+        GoJS automatically requests content and data from the server, and updates the HTML in the DOM.  
+        You can configure an <b>updater</b> in action like so. 
+    </p>
+
+    <pre class="brush: js">
+        var ExampleController = new Controller("example", {
+
+            updateContent: new Action({
+                updater: "content",
+                title: "Content Update",
+                view: "content"
+            })
+
+        });
+    </pre>
+
+    <a href="/example/updatecontent">Update Content</a>
+
+    <hr />
+
+    <h4>Built-in Updaters</h4>
+    <p>There are several built-in updaters.  Any of the following can be be used out-of-the-box.</p>
+    <ul>
+        <li><b>content</b> - Adds content in the main content area.</li>
+        <li><b>insert</b> - Adds content into a specified target element.</li>
+        <li><b>append</b> - Adds content to the end of an element.</li>
+        <li><b>prepend</b> - Adds content to the beginning of an element.</li>
+        <li><b>before</b> - Adds content before a specified element.</li>
+        <li><b>after</b> - Adds content after a specified element</li>
+    </ul>
+
+    <hr />
+
+    <h4>Custom Updaters</h4>
+    <p>
+        You can also add a custom updater using the Go.addUpdaters() method.  The following updater example
+        displays content in a model window using the jQuery UI Dialog plugin.
+    </p>
+
+    <span class="tag">Add Updater</span>
+    <pre class="brush: js">
+        Go.addUpdaters({
+
+            window: function (e) {
+		
+		        //Require jQuery UI
+                Go.require({ scripts: "jqueryui", styles: "jqueryui" }, function () {
+
+                    //Show window
+                    e.element.dialog({
+                        title: (e.action && e.action.title) || "",
+                        modal: true
+                    });
+
+                });
+		
+            }
+
+        });
+    </pre>
+
+    <span class="tag">Use Updater</span>
+    <pre class="brush: js">
+        var ExampleController = new Controller("example", {
+
+            showWindow: new Action({
+                updater: "window", 
+                title: "A Window Update Example",
+                view: "sampleview"
+            })
+
+        });
+    </pre>
+
+    <a href="/example/updatewindow">Update Content</a>
+
+</div>

@@ -3,13 +3,13 @@
 Go.config({
 
     //Settings
-    contentSelector: "#content", //Main content area
     loadingIndicatorCSS: "loading-indicator",
 
     //Resource routes
     scriptRoute: "/gojs/site/scripts/{key}.js",
     styleRoute: "/gojs/site/styles/{key}.css",
     viewRoute: "/gojs/site/views/{key}.html",
+    imageRoute: "/site/images/{key}",
 
     //Routes
     routes: [
@@ -50,11 +50,11 @@ Go.on("activate", function (e) {
             SyntaxHighlighter.highlight(document.body);
             //Replace temp fixes
             //Keep scripts from being run and script highlighter from breaking
-            $("code:contains(script-temp)", code).text("script");
-            $("code:contains(body-temp)", code).text("body");
-            $("code:contains(head-temp)", code).text("head");
-            $("code:contains(html-temp)", code).text("html");
-            $("code:contains(href-temp)", code).text("href");
+            $("code:contains(script-temp)").text("script");
+            $("code:contains(body-temp)").text("body");
+            $("code:contains(head-temp)").text("head");
+            $("code:contains(html-temp)").text("html");
+            $("code:contains(href-temp)").text("href");
             code.show();
         });
     }
@@ -69,5 +69,13 @@ Go.on("complete", function (e) {
         $("li.active, a.active").removeClass("active");
         e.sender.add(e.sender.parent()).addClass("active");
     }
+
+});
+
+//Auto-load controllers
+Go.on("start", function (e) {
+
+    var ctrl = e.values.controller, action = e.values.action;
+    if (ctrl && action) e.require = "controllers/" + ctrl;
 
 });

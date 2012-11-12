@@ -1,0 +1,33 @@
+﻿
+<div data-title="Loading Indicator">
+
+    <h2>Loading Indicator</h2>
+
+    <p>
+        GoJS also includes a loading indicator that is displayed when an HTTP request is made or when 
+        resources are being loaded.  
+    </p>
+
+    <a href="javascript:Go.loading.show();">Show Loading Indicator</a> | 
+    <a href="javascript:Go.loading.hide();">Hide Loading Indicator</a>
+
+    <hr />
+
+    <p>
+        The CSS style for the loading indicator must be set by the config value <b>loadingIndicatorCSS</b>. 
+    </p>
+
+    <pre class="brush: js">
+        .loading-indicator 
+        { 
+            width: 55px; 
+            height: 55px; 
+            opacity: 0.4; 
+            filter: alpha(opacity=40); 
+            text-align: center; 
+            z-index: 9999999; 
+            background: url(/gojs/site/images/loading.gif) no-repeat center center; 
+        }​
+    </pre>
+
+</div>

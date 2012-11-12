@@ -4,7 +4,67 @@
     <h2>Events</h2>
 
     <p>
-        Coming soon...
+        Each time an action is run, a set of events occur.
     </p>
+
+    <ol>
+       <li><b>Run</b> - An action is being executed.</li>
+       <li><b>Request</b> - A server request is being made.</li> 
+       <li><b>Response</b> - A successful server response was recieved.</li> 
+       <li><b>RequestError</b> - A server response failed.  A 404 for example.</li> 
+       <li><b>Success</b> - A server operation was successful... { success: true }</li> 
+       <li><b>Error</b> - A server operation returned an error... { error: "A error occurred" } or { errors: [] }</li> 
+       <li><b>Render</b> - A view is being rendered.</li> 
+       <li><b>Update</b> - An element is being updated in the DOM. See <a href="/updates">updates</a> for details.</li>
+       <li><b>Activate</b> - An element is being "activated". Triggered on page load and after dynamic updates.</li> 
+       <li><b>Complete</b> - The event is finished.</li> 
+    </ol>
+
+    <hr />
+
+    <h4>Action Event Handlers</h4>
+    <p>
+        Event handlers can be added to a specific action.
+    </p>
+    <pre class="brush: js">
+        var TodoController = new Controller("todo", {
+        
+            add: new Action({
+                run: function() { ... }
+                request: function() { ... }
+                response: function() { ... }
+                requestError: function() { ... }
+                success: function() { ... }
+                error: function() { ... }
+                render: function() { ... }
+                update: function() { ... }
+                activate: function() { ... }
+                complete: function() { ... }
+            })
+
+        });
+    </pre>
+
+    <hr />
+
+    <h4>Global Event Handlers</h4>
+    <p>
+        Event handlers can also be run globally on every action using the <b>Go.on()</b> method.  The is an
+        extremely powerful feature that allows you to add functionally to an entire application with 
+        very little code.
+    </p>
+    <p>
+        The following example adds a placeholder function to each input element with a "placeholder" attribute.
+        The <b>activate</b> event is triggered during page load and every time an <a href="/updates">update</a> 
+        is made.
+    </p>
+    <span class="tag">Global Placeholder Shim</span>
+    <pre class="brush: js">
+        Go.on("activate", function(e) {
+            e.element.find("input[placeholder]").each(function() {
+                $(this).placeholder();  //Using custom placeholder plugin
+            })
+        });
+    </pre>
 
 </div>

@@ -4,40 +4,49 @@
     <h2>Hello World</h2>
 
     <p>
-        The basic functionality revolves around controllers, actions and routes.  GoJS automatically activates
+        The basic functionality centers around controllers, actions and routes.  GoJS automatically activates
         links and forms, and routes them to controller actions.  The default route is <b>{controller}/{action}</b>.
-        URL's that match a route are routed to a controller action.  An Action object in GoJS defines the behavior
-        for an action through configuration rather than raw code.  This helps to reuse functionality and reduce code.
     </p>
     <p>
-        In the below example, when a user clicks the below link, the click is intercepted by GoJS and matched against
-        the default route.  So the URL <b>/hello/say</b> matches the route <b>/{controller}/{action}</b>, which 
-        resolves to <b>HelloController.say</b> action.  The "say" action has two properties, "remote" which is the 
+        When a user clicks the below link, the click event is intercepted by GoJS and routed to the controller action.
+        So the URL <b>/message/speak</b> is matched to the default route <b>/{controller}/{action}</b>, which 
+        resolves to <b>MessageController.speak</b> action.  The "speak" action has two properties, "remote" which is the 
         remote URL to request, and "response" which is an event to handle the response.
     </p>
     
     <span class="tag">Plain HTML link</span>
     <pre class="brush: xml;">
-        <a href-temp="/hello/say">Say</a>
+        <!doctype html>
+        <html-temp>
+            <head-temp>
+                <script-temp src="/scripts/jquery.js"></script>
+                <script-temp src="/scripts/go.js"></script>
+            </head-temp>
+            <body-temp>
+                <a href="/message/speak">Say Something</a>
+            </body-temp>
+        </html-temp>
     </pre>
 
     <span class="tag">Server Response</span>
     <pre class="brush: js;">
-        { message: "Hello World!" }
+        { "message": "Hello World!" }
     </pre>
 
     <span class="tag">Controller & Action</span>
     <pre class="brush: js;">
-        var HelloController = new Controller("hello", {
+        var MessageController = new Controller("message", {
         
-            say: new Action({
-                remote: "/helloworld.json",
-                response: function(e) {
+            speak: new Action({
+                remote: "/helloworld.json",     //Connect to remote service
+                response: function(e) {         //Handle the response
                     alert(e.data.message);
                 }
             })
 
         });
     </pre>
+
+    <a href="/message/speak">Say Something</a>
 
 </div>
