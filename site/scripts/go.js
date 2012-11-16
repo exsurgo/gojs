@@ -1159,7 +1159,7 @@ Go = (function () {
                 data = e.data || null;
 
             //Model is constructor function, call
-            if (isFunction(modelType)) model = modelType(data);
+            if (isFunction(modelType)) model = modelType(data, e);
             //Model is object, combine
             else if (typeof modelType == "object") model = extend(data, modelType);
 

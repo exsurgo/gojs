@@ -1,10 +1,38 @@
 ﻿
 <div data-title="Models">
 
-    <h2>Models</h2>
+    <h1>Models</h1>
 
     <p>
-        Coming soon...
+        The <b>model</b> property on an action indicates what model should be used.
     </p>
+    <pre class="brush: js">
+        var MessageController = new Controller("message", {
+
+            speak: new Action({
+                model: MessageList, //Model to use as context for view
+                view: "list"
+            })
+
+        });
+    </pre>
+
+    <hr />
+
+    <h4>Response Data</h4>
+    <p>
+         Models can be plain objects or functions.  If an object, any response data is merged into a single 
+         object.  If a function, it is executed with the ActionEvent "e" as the argument. In this case, you 
+         can access the response data via the <b>e.data</b> property.
+    </p>
+    <pre class="brush: js">
+        var MessageList = function(data) {
+            var model = {};                 //Create model to return
+            model.messages = e.data;        //Add response data to model
+            model.count = e.data.length;    //Add additional properties
+            return model;                   
+        };
+    </pre>
+    
 
 </div>

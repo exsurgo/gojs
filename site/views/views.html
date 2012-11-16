@@ -4,7 +4,59 @@
     <h1>Views</h1>
 
     <p>
-        Coming soon...
+        GoJS automatically handles retrieving, caching and rendering of HTML views.  
     </p>
+
+    <hr />
+
+    <h4>Setting Views</h4>
+    <p>
+        You can use the <b>view</b> property of an action to define which view is retrieved and rendered. The 
+        location of the views can be customized in the config.
+    </p>
+    <pre class="brush: js">
+        //Set the view location in the config
+        Go.config({
+            viewRoute: "/app/views/{key}.html",
+        }); 
+
+        //Set view property in actions
+        var InfoController = new Controller({
+
+            getInfo: new Action({           
+                view: "about",              //Retrieve view from '/app/views/about.html'
+                updater: "content"          //Render view in main content area
+            })
+
+        });
+    </pre>
+
+    <hr />
+
+    <h4>Preloading views</h4>
+    <p>
+        You can also preload views.  This is particularly useful when multiple child views are being called.
+    </p>
+    <pre class="brush: js">
+        var InfoController = new Controller({
+
+            getInfo: new Action({           
+                require: {
+                    views: "childview1, childview2",    //Load these views
+                },
+                view: "mainview"                        //Load and use as main view
+            })
+
+        });
+    </pre>
+
+    <hr />
+
+    <h4>Rendering Templates</h4>
+    <p>
+        GoJS includes a powerful rendering engine that allows you to combine tags, attributes and custom expressions.
+        See more <a href="/templates">here</a>.
+    </p>
+
 
 </div>

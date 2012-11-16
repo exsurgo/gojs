@@ -10,7 +10,7 @@
     <p>
         When a user clicks the below link, the click event is intercepted by GoJS and routed to the controller action.
         So the URL <b>/message/speak</b> is matched to the default route <b>/{controller}/{action}</b>, which 
-        resolves to <b>MessageController.speak</b> action.  The "speak" action has two properties, "remote" which is the 
+        resolves to the <b>MessageController.speak</b> action.  The "speak" action has two properties, "remote" which is the 
         remote URL to request, and "response" which is an event to handle the response.
     </p>
     
@@ -38,7 +38,7 @@
         var MessageController = new Controller("message", {
         
             speak: new Action({
-                remote: "/helloworld.json",     //Connect to remote service
+                remote: "/api/message/get",     //Connect to remote service
                 response: function(e) {         //Handle the response
                     alert(e.data.message);
                 }
