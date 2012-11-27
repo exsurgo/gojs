@@ -73,9 +73,12 @@ Go.on("activate", function (e) {
 Go.on("complete", function (e) {
 
     //Set active menu
-    if (e.action && e.action.updater == "content" && e.sender) {
-        $("li.active, a.active").removeClass("active");
-        e.sender.add(e.sender.parent()).addClass("active");
+    if (e.action && e.action.updater == "content" && e.url) {
+        var menuLink = $("a[href='#" + e.url.replace("/", "") + "']");
+        if (menuLink.length) {
+            $("li.active").removeClass("active");
+            menuLink.parent().addClass("active");
+        }
     }
 
 });

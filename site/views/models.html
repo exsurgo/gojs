@@ -26,7 +26,7 @@
          can access the response data via the <b>e.data</b> property.
     </p>
     <pre class="brush: js">
-        var MessageList = function(data) {
+        var MessageList = function(e) {
             var model = {};                 //Create model to return
             model.messages = e.data;        //Add response data to model
             model.count = e.data.length;    //Add additional properties

@@ -1,6 +1,27 @@
-(function( window ) {
-	'use strict';
+﻿
+//Config
+Go.config({
 
-	// Your starting point. Enjoy the ride!
+    //Settings
+    loadingIndicatorCSS: "loading-indicator",
 
-})( window );
+    //Resource routes
+    scriptRoute: "js/{key}.js",
+    styleRoute: "css/{key}.css",
+    viewRoute: "views/{key}.html",
+    imageRoute: "img/{key}",
+
+    //Routes
+    routes: [
+        //Main route
+        {
+            route: "/", //Route definition
+            defaults: { controller: "todos", action: "main" }, //Default values
+            require: "todos" //Require todo controller
+        },
+        //Default routes
+        { route: "{controller}/{action}/{id}" },
+        { route: "{controller}/{action}" }
+    ]
+
+});

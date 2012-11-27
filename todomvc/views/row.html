@@ -1,0 +1,26 @@
+﻿
+<li data-id="{id}" class="{completed ? 'completed' : ''}">
+	<div class="view">
+		<input class="toggle" type="checkbox" go-run="/todos/toggle/{id}">
+		<label>{title}</label>
+		<button class="destroy" go-run="/todos/destroy"></button>
+	</div>
+	<input class="edit" value="{title}">
+</li>
+
+<!--<li class="completed">
+	<div class="view">
+		<input class="toggle" type="checkbox" checked>
+		<label>Create a TodoMVC template</label>
+		<button class="destroy"></button>
+	</div>
+	<input class="edit" value="Create a TodoMVC template">
+</li>
+<li>
+	<div class="view">
+		<input class="toggle" type="checkbox">
+		<label>Rule the web</label>
+		<button class="destroy"></button>
+	</div>
+	<input class="edit" value="Rule the web">
+</li>-->

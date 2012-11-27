@@ -42,7 +42,6 @@ Go = (function () {
             _templates = {}, //Cached template rendering functions
             _updaters = {}, //Custom update functions
             _events = [], //Global events
-            _currentAddress, //URL was just changed to this value
             _clickHold, //Prevents double clicks
             _requestHold, //Prevents request
             _content; //Main content area
@@ -158,17 +157,6 @@ Go = (function () {
         go.addUpdaters = function (updaters) {
             _updaters = extend(_updaters, updaters);
         };
-
-        //Set the current address
-        go.setAddress = function (address) {
-            var address = formatURL(address),
-                hash = formatURL(location.hash);
-            if (hash != address) {
-                _currentAddress = address;
-                if (address == "/") location.hash = "";
-                else location.hash = trimChars(address, "/");
-            }
-        };
     }
 
     /***** Public Objects *****/
@@ -258,18 +246,11 @@ Go = (function () {
             //Find and cache content area
             _content = $(_config.contentSelector);
 
-            //Address change - Front/Back button support
-            onAddressChange(function (address) {
-                //If address is not current address and isn't held, then start
-                if (address != _requestHold && address != _currentAddress)
-                    handleRun({ url: address });
-            });
-
             //Create event object (e)
             //URL is either current hash or "/" by default
             var e = {
                 element: $(document),
-                url: formatURL(location.hash, "#/") || "/"
+                url: formatURL(location.hash) || "/"
             };
             getRouteValuesFromUrl(e);
 
@@ -627,7 +608,7 @@ Go = (function () {
             //TODO: Move window to updaters
             if (!isUpdated) {
                 switch (updaterName) {
-                    //Content                                                                                                                                                                                                                                                                                                        
+                    //Content                                                                                                                                                                                                                                                                                                            
                     /*  
                     *   title: {string} 
                     *   address: {string} 
@@ -644,11 +625,11 @@ Go = (function () {
                         //Scroll to top by default
                         if (!updateData.scroll && isFunction(scrollTo)) $(window).scrollTop(0);
                         break;
-                    //Replace                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                    //Replace                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
                     case "replace":
                         $("#" + id).replaceWith(element);
                         break;
-                    //Insert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                    //Insert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
                     /*
                     *   target: {selector}
                     */ 
@@ -656,7 +637,7 @@ Go = (function () {
                         var target = $(updateData.target);
                         target.html(element);
                         break;
-                    //Prepend                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+                    //Prepend                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
                     /*
                     *   target: {selector}
                     */ 
@@ -665,7 +646,7 @@ Go = (function () {
                         if (existing.length) existing.replaceWith(element);
                         else $(updateData.target).prepend(element);
                         break;
-                    //Append                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+                    //Append                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
                     /*
                     *   target: {selector}
                     */ 
@@ -674,7 +655,7 @@ Go = (function () {
                         if (existing.length) existing.replaceWith(element);
                         else $(updateData.target).append(element);
                         break;
-                    //After                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+                    //After                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
                     /*
                     *   target: {selector}
                     */ 
@@ -682,7 +663,7 @@ Go = (function () {
                         var target = $(updateData.target);
                         target.after(element);
                         break;
-                    //Before                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+                    //Before                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
                     /*
                     *   target: {selector}
                     */ 
@@ -1055,6 +1036,54 @@ Go = (function () {
         isShown;
     }
 
+    /***** Address, Deep-Linking *****/
+    {
+        //TODO: Fix last forward button issue
+
+        //URL was just changed to this value
+        var _currentAddress;
+
+        //Set the current address
+        go.setAddress = function (address) {
+            var address = formatURL(address),
+                hash = formatURL(location.hash);
+            if (hash != address) {
+                _currentAddress = address;
+                if (address == "/") location.hash = "";
+                else location.hash = trimChars(address, "/");
+            }
+        };
+
+        //Run callback when hash or address has changed
+        //TODO: Implement HTML5 push state
+        function runAddressChangeCallback(address) {
+            var address = formatURL(location.hash);
+            //If address is not current address and isn't held, then run action
+            if (address != _requestHold && address != _currentAddress) {
+                handleRun({ url: address });
+            }
+        }
+
+        //Native hash change event
+        if (("onhashchange" in window) && !($.browser.msie && parseInt($.browser.version, 10) < 8)) {
+            $(window).bind("hashchange", runAddressChangeCallback);
+        }
+            
+        //If no hashchange event, or is IE7 and below, must use polling
+        else {
+            var prevHash = location.hash;
+            setInterval(function () {
+                //Compare the current hash with previous
+                var curHash = location.hash;
+                if (curHash != prevHash) {
+                    runAddressChangeCallback();
+                    prevHash = curHash;
+                }
+            }, 100);
+        }
+
+    }
+
     /***** Private Methods *****/
     {
         //Get route values from URL
@@ -1231,32 +1260,6 @@ Go = (function () {
                 });
             });
         }
-
-        //Run callback with hash or address has changed
-        //TODO: Implement HTML5 push state
-        function onAddressChange(callback) {
-            //Run callback with address as argument
-            function runCallback() {
-                var hash = location.hash || "/";
-                callback.call(window, formatURL(hash));
-            }
-            //Native hash change event
-            if (("onhashchange" in window) && !($.browser.msie && parseInt($.browser.version, 10) < 8)) {
-                $(window).bind("hashchange", runCallback);
-            }
-            //If no hashchange event, or is IE7 and below, must use polling
-            else {
-                var prevHash = location.hash;
-                setInterval(function () {
-                    //Compare the current hash with previous
-                    var curHash = location.hash;
-                    if (curHash != prevHash) {
-                        runCallback();
-                        prevHash = curHash;
-                    }
-                }, 100);
-            }
-        }
     }
 
     /***** Helpers *****/
@@ -1431,7 +1434,7 @@ Go = (function () {
         }
     }
 
-    //Document ready event
+    //Document ready, Initialize page here
     $(handleReady);
 
     return go;

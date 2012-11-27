@@ -1,77 +1,65 @@
-﻿
-<!doctype html>
+﻿<!doctype html>
 <html>
 <head>
     <title>GoJS - JavaScript MVC Framework</title>
     <!--Basic Styles-->
     <link rel="stylesheet" href="site/styles/bootstrap.css">
     <link rel="stylesheet" href="site/styles/app.css">
-    <!--Basic Scripts--> 
+    <!--Basic Scripts-->
     <script src="site/scripts/jquery.js"></script>
     <script src="site/scripts/go.js"></script>
-    <script src="site/scripts/init.js"></script> 
+    <script src="site/scripts/init.js"></script>
     <script src="site/scripts/updaters.js"></script>
 </head>
 <body>
-
     <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="/">GoJS</a>
-          <div class="nav-collapse collapse">
-            <p class="navbar-text pull-right">
-            
-            </p>
-            <ul class="nav">
-              <li class="active"><a href="/">Home</a></li>
-              <li><a href="/about">About</a></li>
-            </ul>
-          </div><!--/.nav-collapse -->
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
+                    class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </a><a class="brand" href="/">GoJS</a>
+                <div class="nav-collapse collapse">
+                    <p class="navbar-text pull-right">
+                    </p>
+                    <ul class="nav">
+                        <li class="active"><a href="/">Home</a></li>
+                        <li><a href="/about">About</a></li>
+                    </ul>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
         </div>
-      </div>
     </div>
-
     <!--Container-->
-    <div class="container-fluid">      
-      
-      <div class="row-fluid">
-        
-        <!--Nav Side bar-->
-        <div class="span2">
-          <div class="well sidebar-nav sidebar-nav-fixed">
-            <ul class="nav nav-list">
-              <li class="active"><a href="/">Home</a></li>
-              <li><a href="/helloworld">Hello World</a></li>
-              <li><a href="/complete">A Complete Example</a></li>
-              <!--<li><a href="/controllers">Controllers & Actions</a></li>-->
-              <li><a href="/models">Models</a></li>
-              <li><a href="/views">Views</a></li>
-              <li><a href="/navigation">Navigation</a></li>
-              <li><a href="/updates">Updates</a></li>
-              <li><a href="/templates">Templates</a></li>
-              <li><a href="/resources">Loading Resources</a></li>
-              <li><a href="/routing">Routing</a></li>
-              <li><a href="/events">Events</a></li>
-              <li><a href="/loadingindicator">Loading Indicator</a></li>
-              <li><a href="/todomvc">TodoMVC Example</a></li>
-              <li><a href="/api">API</a></li>
-            </ul>
-          </div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <!--Nav Side bar-->
+            <div class="span2">
+                <div class="well sidebar-nav sidebar-nav-fixed">
+                    <ul class="nav nav-list">
+                        <li class="active"><a href="/">Home</a></li>
+                        <li><a href="/helloworld">Hello World</a></li>
+                        <li><a href="/controllers">Controllers</a></li>
+                        <li><a href="/models">Models</a></li>
+                        <li><a href="/views">Views</a></li>
+                        <li><a href="/complete">A Complete Example</a></li>
+                        <li><a href="/navigation">Navigation</a></li>
+                        <li><a href="/updates">Updates</a></li>
+                        <li><a href="/templates">Templates</a></li>
+                        <li><a href="/resources">Loading Resources</a></li>
+                        <li><a href="/routing">Routing</a></li>
+                        <li><a href="/events">Events</a></li>
+                        <li><a href="/loadingindicator">Loading Indicator</a></li>
+                        <li><a href="/todomvc">TodoMVC Example</a></li>
+                        <li><a href="/api">API</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!--Main Content-->
+            <div go-content class="span10">
+            </div>
         </div>
-
-        <!--Main Content-->
-        <div go-content class="span10"></div>
-
-      </div>
-
-      <hr class="space" />
-
+        <hr class="space" />
     </div>
-
 </body>
 </html>

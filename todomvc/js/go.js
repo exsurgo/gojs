@@ -1,10 +1,10 @@
 
 /*
-*   GoJS 0.7.7
+*   GoJS 0.7.84
 *   Dependencies: jQuery 1.5+
 *
 *   GoJS is a full-featured MVC framework that provides support for controllers, actions, views, models, routing,
-*   deep linking, back/front button support, progress indication, resource loading, template rendering, and more.
+*   deep linking, back/front button support, loading indication, resource loading, template rendering, and more.
 */
 
 //Public objects
@@ -14,19 +14,17 @@
 
     //Controller
     var Controller = function (ctrlName, items) {
-        this.init(ctrlName, items);
-        return this;
+        return this.init(ctrlName, items);
     };
 
     //Action
-    var Action = function (options) {
-        this.init(options);
-        return this;
+    var Action = function (props) {
+        return this.init(props);
     };
 
     //ActionEvent
     var ActionEvent = function (props) {
-
+        return this.init(props);
     };
 }
 
@@ -133,10 +131,18 @@ Go = (function () {
             else for (var key in config) {
                 var val = config[key];
                 //Join arrays
-                if (isArray(val) && isArray(_config[key])) _config[key] = val;
+                if (isArray(val) && isArray(_config[key])) {
+                    _config[key] = _config[key].concat(val);
+                }
                 //Assign other values
                 else _config[key] = val;
             }
+        };
+
+        //Set routes
+        go.route = function (routes) {
+            var currentRoutes = _config.routes;
+            currentRoutes = currentRoutes.concat(routes);
         };
 
         //Add event
@@ -165,6 +171,8 @@ Go = (function () {
 
         Controller.prototype.init = function (ctrlName, items) {
 
+            this.type == "controller";
+
             //Create controller object
             var ctrl = {
                 name: ctrlName,
@@ -176,6 +184,13 @@ Go = (function () {
             for (var key in items) {
 
                 var item = items[key];
+
+                //If function, then convert to action
+                if (isFunction(item)) {
+                    item = new Action({
+                        complete: item
+                    });
+                }
 
                 //If is Action, add to actions collection
                 if (item.type == "action") {
@@ -230,6 +245,11 @@ Go = (function () {
 
         Action.prototype.init = function (options) {
             this.type = "action";
+            extend(this, options)
+        };
+
+        ActionEvent.prototype.init = function (options) {
+            this.type = "actionevent";
             extend(this, options)
         };
     }
@@ -475,9 +495,6 @@ Go = (function () {
 
             }
 
-            //Enable sender
-            toggleSender(e.sender, true);
-
             //Hide progress
             go.loading.hide();
 
@@ -608,7 +625,7 @@ Go = (function () {
             //TODO: Move window to updaters
             if (!isUpdated) {
                 switch (updaterName) {
-                    //Content                                                                                                                                                                                                                                                                                                            
+                    //Content                                                                                                                                                                                                                                                                                                                           
                     /*  
                     *   title: {string} 
                     *   address: {string} 
@@ -625,11 +642,11 @@ Go = (function () {
                         //Scroll to top by default
                         if (!updateData.scroll && isFunction(scrollTo)) $(window).scrollTop(0);
                         break;
-                    //Replace                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+                    //Replace                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
                     case "replace":
                         $("#" + id).replaceWith(element);
                         break;
-                    //Insert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+                    //Insert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
                     /*
                     *   target: {selector}
                     */ 
@@ -637,7 +654,7 @@ Go = (function () {
                         var target = $(updateData.target);
                         target.html(element);
                         break;
-                    //Prepend                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+                    //Prepend                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
                     /*
                     *   target: {selector}
                     */ 
@@ -646,7 +663,7 @@ Go = (function () {
                         if (existing.length) existing.replaceWith(element);
                         else $(updateData.target).prepend(element);
                         break;
-                    //Append                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+                    //Append                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
                     /*
                     *   target: {selector}
                     */ 
@@ -655,7 +672,7 @@ Go = (function () {
                         if (existing.length) existing.replaceWith(element);
                         else $(updateData.target).append(element);
                         break;
-                    //After                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+                    //After                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
                     /*
                     *   target: {selector}
                     */ 
@@ -663,7 +680,7 @@ Go = (function () {
                         var target = $(updateData.target);
                         target.after(element);
                         break;
-                    //Before                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+                    //Before                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
                     /*
                     *   target: {selector}
                     */ 
@@ -763,6 +780,7 @@ Go = (function () {
                 form.attr("id", createRandomId());
                 //Convert fields to array, exclude filtered items
                 //Array is in format [{name: "...", value: ".."},{name: "...", value: "..."}]
+                //TODO: serializeArray does not always work... need to investigate
                 e.postData = form.find(":input").not(_config.submitFilter).serializeArray();
                 //Disable form
                 toggleSender(form, false);
@@ -784,11 +802,10 @@ Go = (function () {
             });
 
             //Run attribute click
-            $("[go-run]").click(function (clickEvent) {
-                //Prevent default
-                clickEvent.preventDefault();
+            $("[go-run]", element).click(function (clickEvent) {
                 //Prevent duplicate requests
-                if (preventDoubleClick()) return false;
+                //TODO: This does not allow radio/checks for some reason
+                //if (preventDoubleClick()) return false;
                 //Create event object
                 var el = $(this),
                     e = {
@@ -798,7 +815,6 @@ Go = (function () {
                     };
                 //Run action
                 handleRun(e);
-                return false;
             });
 
             //Close
@@ -826,6 +842,9 @@ Go = (function () {
         }
 
         function handleComplete(e) {
+
+            //Enable sender
+            toggleSender(e.sender, true);
 
             //EVENT: complete
             triggerEvents("complete", e);
@@ -1068,7 +1087,7 @@ Go = (function () {
         if (("onhashchange" in window) && !($.browser.msie && parseInt($.browser.version, 10) < 8)) {
             $(window).bind("hashchange", runAddressChangeCallback);
         }
-            
+
         //If no hashchange event, or is IE7 and below, must use polling
         else {
             var prevHash = location.hash;
@@ -1187,10 +1206,14 @@ Go = (function () {
                 modelType = e.action.model,
                 data = e.data || null;
 
-            //Model is constructor function, call
-            if (isFunction(modelType)) model = modelType(data, e);
+            //Model is function, execute with e as argument 
+            if (isFunction(modelType)) model = modelType.call(e, e);
+
             //Model is object, combine
             else if (typeof modelType == "object") model = extend(data, modelType);
+
+            //Assign resolved model
+            if (model) e.model = model;
 
             return model;
         }
@@ -1222,10 +1245,10 @@ Go = (function () {
             });
 
             //Try to run event on "e" object
-            tryCallFunction(e, eventType, controller, e);
+            tryCallFunction(e, eventType, e, e);
 
             //Try to run event on "action" object
-            tryCallFunction(e, "action." + eventType, controller, e);
+            tryCallFunction(e, "action." + eventType, e, e);
 
         }
 
@@ -1462,12 +1485,13 @@ Go.templates = (function () {
 
     //Render individual data item or an array of items
     templates.renderAll = function (name, data) {
-        var html = "";
+        var html = "",
+            renderFunc = Go.templates.render;
         if (jQuery.isArray(data))
             jQuery(data).each(function () {
-                html += smart.render(name, this);
+                html += renderFunc(name, this);
             });
-        else html += smart.render(name, data);
+            else html += renderFunc(name, data);
         return html;
     };
 

@@ -4,7 +4,84 @@
     <h1>Controllers</h1>
 
     <p>
-        Coming soon...
+        The basic functionality centers around controllers, actions and routes.  GoJS automatically activates
+        links and forms, and routes them to controller actions.  The default route is <b>{controller}/{action}</b>.
     </p>
+    <p>
+        You define a controller by simply instantiating a new <b>Controller</b> object.  The arguments should
+        be the controller name and an object containing the actions for the controller.
+    </p>
+    <p>
+        An action can either be an <b>Action</b> or a plain function.
+    </p>
+    <pre class="brush: js">
+        var TodoController = new Controller("todo", {
+
+            //As an Action object
+            firstAction: new Action({
+                ...
+            }),
+
+            //As a function
+            secondAction: function() {
+                ...
+            }
+
+        });
+    </pre>
+
+    <hr />
+
+    <h4>Running Actions</h4>
+    <p>
+        Actions can be called in a number of ways. Values can also be passed via query strings or objects. 
+    </p>
+    <p>
+        The following controller action <b>Message.speak</b> could be run by any of the following methods.
+        The value <b>id</b> is also passed to the action.
+    </p>
+    <pre class="brush: js">
+        var MessageController = new Controller("message", {
+            
+            speak: new Action({
+                ...
+            })
+
+        });
+    </pre>
+    <ol>
+        <li>
+            <b>Link Clicks</b>
+            <pre class="brush: xml">
+                <a href="/message/speak?id=123">Speak</a>
+            </pre>
+        </li>
+        <li>
+            <b>Form Submits</b> 
+            <pre class="brush: xml">
+                <form action="/message/speak?id=123">
+                    ...
+                </form>
+            </pre>        
+        </li>
+        <li>
+            <b>Go.run()</b>
+            <pre class="brush: js">
+                Go.run("message", "speak", { id: 123 });
+            </pre>        
+        </li>
+        <li>    
+            <b>Directly</b>
+            <pre class="brush: js">
+                MessageController.speak({ id: 123 });
+            </pre>
+        </li>
+        <li>
+            <b>Address Change</b>
+            <pre class="brush: js">
+                location.hash = "/message/speak?id=123";
+            </pre>
+        </li>
+    </ol>
 
 </div>
