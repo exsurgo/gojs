@@ -1,6 +1,6 @@
 
 /*
-*   GoJS 0.7.84
+*   GoJS 0.7.85
 *   Dependencies: jQuery 1.5+
 *
 *   GoJS is a full-featured MVC framework that provides support for controllers, actions, views, models, routing,
@@ -14,21 +14,21 @@
 
     //Controller
     var Controller = function (ctrlName, items) {
-        return this.init(ctrlName, items);
+        return this.construct(ctrlName, items);
     };
 
     //Action
     var Action = function (props) {
-        return this.init(props);
+        return this.construct(props);
     };
 
     //ActionEvent
     var ActionEvent = function (props) {
-        return this.init(props);
+        return this.construct(props);
     };
 }
 
-//Core object
+//GoJS Core
 Go = (function () {
 
     var go = {};
@@ -36,13 +36,13 @@ Go = (function () {
     /***** Init *****/
     {
         //Private fields
-        var _controllers = {}, //Controllers
-            _templates = {}, //Cached template rendering functions
-            _updaters = {}, //Custom update functions
-            _events = [], //Global events
-            _clickHold, //Prevents double clicks
-            _requestHold, //Prevents request
-            _content; //Main content area
+        var _controllers = {},  //Controllers
+            _templates = {},    //Cached template rendering functions
+            _updaters = {},     //Custom update functions
+            _events = [],       //Global events
+            _clickHold,         //Prevents double clicks
+            _requestHold,       //Prevents request
+            _content;           //Main content area
 
         //Default config
         var _config = {
@@ -72,15 +72,30 @@ Go = (function () {
     /***** Public Methods *****/
     {
         //Run Action
-        go.run = function (controllerName, actionName, values) {
-            //Create event object
-            var e = {
-                values: extend(values, {
-                    controller: controllerName,
-                    action: actionName
-                })
-            };
-            handleRun(e);
+        go.run = function () {
+
+            //Arguments
+            var args = arguments,
+                a1 = args[0],
+                a2 = args[1],
+                a3 = args[2];
+
+            //Argument is an ActionEvent
+            if (a1 instanceof ActionEvent) handleRun(a1);
+
+            //Arguments are controllerName, actionName and values
+            else {
+
+                //Create ActionEvent object
+                var e = new ActionEvent({
+                    values: extend(a3, {    //values
+                        controller: a1,     //controllerName
+                        action: a2          //actionName
+                    })
+                });
+                handleRun(e);
+            }
+
         };
 
         //Get
@@ -141,8 +156,7 @@ Go = (function () {
 
         //Set routes
         go.route = function (routes) {
-            var currentRoutes = _config.routes;
-            currentRoutes = currentRoutes.concat(routes);
+            _config.routes = _config.routes.concat(routes);
         };
 
         //Add event
@@ -165,13 +179,11 @@ Go = (function () {
         };
     }
 
-    /***** Public Objects *****/
+    /***** Constructors *****/
     {
-        //Initialize objects internally for access to private functions
+        //Construct objects internally for access to private functions
 
-        Controller.prototype.init = function (ctrlName, items) {
-
-            this.type == "controller";
+        Controller.prototype.construct = function (ctrlName, items) {
 
             //Create controller object
             var ctrl = {
@@ -193,7 +205,7 @@ Go = (function () {
                 }
 
                 //If is Action, add to actions collection
-                if (item.type == "action") {
+                if (item instanceof Action) {
 
                     //Add properties to action
                     var action = extend(item, {
@@ -243,14 +255,12 @@ Go = (function () {
 
         };
 
-        Action.prototype.init = function (options) {
-            this.type = "action";
-            extend(this, options)
+        Action.prototype.construct = function (options) {
+            return extend(this, options);
         };
 
-        ActionEvent.prototype.init = function (options) {
-            this.type = "actionevent";
-            extend(this, options)
+        ActionEvent.prototype.construct = function (options) {
+            return extend(this, options);
         };
     }
 
@@ -266,12 +276,12 @@ Go = (function () {
             //Find and cache content area
             _content = $(_config.contentSelector);
 
-            //Create event object (e)
+            //Create ActionEvent object
             //URL is either current hash or "/" by default
-            var e = {
+            var e = new ActionEvent({
                 element: $(document),
                 url: formatURL(location.hash) || "/"
-            };
+            });
             getRouteValuesFromUrl(e);
 
             //EVENT: ready
@@ -414,7 +424,7 @@ Go = (function () {
         function handleRequestError(e) {
 
             //Enable sender
-            toggleSender(e.sender, true);
+            go.utils.toggleSender(e.sender, true);
 
             //EVENT: error
             triggerEvents("error", e);
@@ -592,7 +602,7 @@ Go = (function () {
 
             //Ensure element has id
             if (id == "" || id == undefined) {
-                id = createRandomId();
+                id = go.utils.createRandomId();
                 element.attr("id", id);
             }
 
@@ -625,7 +635,7 @@ Go = (function () {
             //TODO: Move window to updaters
             if (!isUpdated) {
                 switch (updaterName) {
-                    //Content                                                                                                                                                                                                                                                                                                                           
+                    //Content                                                                                                                                                                                                                                                                                                                                      
                     /*  
                     *   title: {string} 
                     *   address: {string} 
@@ -642,11 +652,11 @@ Go = (function () {
                         //Scroll to top by default
                         if (!updateData.scroll && isFunction(scrollTo)) $(window).scrollTop(0);
                         break;
-                    //Replace                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+                    //Replace                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
                     case "replace":
                         $("#" + id).replaceWith(element);
                         break;
-                    //Insert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+                    //Insert                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
                     /*
                     *   target: {selector}
                     */ 
@@ -654,7 +664,7 @@ Go = (function () {
                         var target = $(updateData.target);
                         target.html(element);
                         break;
-                    //Prepend                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+                    //Prepend                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
                     /*
                     *   target: {selector}
                     */ 
@@ -663,7 +673,7 @@ Go = (function () {
                         if (existing.length) existing.replaceWith(element);
                         else $(updateData.target).prepend(element);
                         break;
-                    //Append                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+                    //Append                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
                     /*
                     *   target: {selector}
                     */ 
@@ -672,7 +682,7 @@ Go = (function () {
                         if (existing.length) existing.replaceWith(element);
                         else $(updateData.target).append(element);
                         break;
-                    //After                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+                    //After                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
                     /*
                     *   target: {selector}
                     */ 
@@ -680,7 +690,7 @@ Go = (function () {
                         var target = $(updateData.target);
                         target.after(element);
                         break;
-                    //Before                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+                    //Before                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
                     /*
                     *   target: {selector}
                     */ 
@@ -710,141 +720,18 @@ Go = (function () {
             //EVENT: activate
             triggerEvents("activate", e);
 
-            //Scroll
-            //TODO: Need to cross-browser test this
-            if (isFunction(scrollTo)) {
-                $("[data-scroll=true]", element).each(function () {
-                    window.scrollTo($(this).offset().top);
-                });
-            }
-
-            //Link click
-            $(_config.autoActivateViews ? "a:not([href=#],[href^=#],[href^=javascript],[href^=mailto],[go-deactivate])" : "a:[go-activate]", element).each(function () {
-                //Get link
-                var link = $(this);
-                var url = link.attr("href");
-                if (!url || url == "#") return;
-                //Ensure isn't external link
-                var base = window.location.protocol + "//" + window.location.hostname;
-                if (url && url != "" && url.charAt(0) != "/" && base != url.slice(0, base.length)) {
-                    //Open all external links in new windows
-                    link.attr("target", "_blank");
-                    return;
-                }
-                //Remove any existing click events
-                link.unbind("click");
-                //Modify links to include hash
-                if (_config.autoCorrectLinks && url != undefined && url[0] == "/") {
-                    url = "#" + url.substr(1);
-                    link.attr("href", url);
-                }
-                //Don't attach event if link opens in new window
-                if (link.attr("target") == "_blank") return;
-                //Click
-                link.click(function (clickEvent) {
-                    //Prevent default
-                    clickEvent.preventDefault();
-                    //Prevent duplicate requests
-                    if (preventDoubleClick()) return false;
-                    //Modify link
-                    if (url && url[0] == "#") url = "/" + url.substr(1);
-                    //Create event object
-                    var e = {
-                        url: url,
-                        sender: link,
-                        clickEvent: clickEvent
-                    };
-                    //Run action
-                    handleRun(e);
-                    return false;
-                });
-            });
-
-            //Form submit
-            $(_config.autoActivateViews ? "form:not([go-deactivate])" : "form:[go-activate]", element).submit(function (submitEvent) {
-                //Prevent duplicate requests
-                if (preventDoubleClick()) return false;
-                //Get form
-                var form = $(this),
-                    e = {
-                        url: form.attr("action"),
-                        sender: form,
-                        isPost: true,
-                        submitEvent: submitEvent
-                    };
-                //Return if no ajax
-                if (form.attr("data-ajax") == "false" || form.find(":submit").attr("data-ajax") == "false") return;
-                //Prevent default
-                submitEvent.preventDefault();
-                //Ensure unique ids
-                form.attr("id", createRandomId());
-                //Convert fields to array, exclude filtered items
-                //Array is in format [{name: "...", value: ".."},{name: "...", value: "..."}]
-                //TODO: serializeArray does not always work... need to investigate
-                e.postData = form.find(":input").not(_config.submitFilter).serializeArray();
-                //Disable form
-                toggleSender(form, false);
-                //Run action
-                handleRun(e);
-                return false;
-            });
-
-            //Submit button click
-            $(_config.autoActivateViews ? ":submit:not([go-deactivate])" : ":submit[go-activate]", element).click(function (e) {
-                //Prevent default
-                e.preventDefault();
-                var form = $(this).parents("form:first");
-                //Return if no ajax
-                if (form.attr("data-ajax") == "false") return;
-                //Submit form
-                form.submit();
-                return false;
-            });
-
-            //Run attribute click
-            $("[go-run]", element).click(function (clickEvent) {
-                //Prevent duplicate requests
-                //TODO: This does not allow radio/checks for some reason
-                //if (preventDoubleClick()) return false;
-                //Create event object
-                var el = $(this),
-                    e = {
-                        url: el.attr("go-run"),
-                        sender: el,
-                        clickEvent: clickEvent
-                    };
-                //Run action
-                handleRun(e);
-            });
-
-            //Close
-            $("[data-close=true]", element).click(function () {
-                $(this).closest("[data-update]").remove();
-            });
-
-            //Submit on dropdown change
-            $("select[data-submit=true]", element).change(function () {
-                $(this).parent("form:first").submit();
-            });
-
-            //Submit on click
-            $("[data-submit=true]:not(select)", element).click(function () {
-                $(this).parent("form:first").submit();
-            });
-
-            //Autoset focus
-            var el = $("[data-focus=true]", element);
-            if (el.length > 0) setTimeout(function () { el.first().focus(); }, 100);
-            else setTimeout(function () { $(":input:first:not([data-focus=false])", element).focus(); }, 100);
+            //Run activator
+            go.activator.run(element);
 
             //Run complete handler
             runNextHandler(handleComplete, e);
+
         }
 
         function handleComplete(e) {
 
             //Enable sender
-            toggleSender(e.sender, true);
+            go.utils.toggleSender(e.sender, true);
 
             //EVENT: complete
             triggerEvents("complete", e);
@@ -1049,12 +936,6 @@ Go = (function () {
         };
     }
 
-    /***** Loading Indicator *****/
-    {
-        var loadingHTML,
-        isShown;
-    }
-
     /***** Address, Deep-Linking *****/
     {
         //TODO: Fix last forward button issue
@@ -1117,9 +998,30 @@ Go = (function () {
             e.values = (e.values || {});
 
             //Locals
-            var url = trimChars(e.url, "/") || "/",
+            var url = trimChars(e.url, "/"),
                 routes = _config.routes,
                 length = routes.length;
+
+            //Query string
+            if (/\?/.test(url)) {
+
+                //Split string from path
+                var parts = url.split("?");
+                    params = parts[1].split("&");
+
+                //Reassign URL path
+                url = trimChars(parts[0], "/");
+
+                //Add params to e.values
+                for (var i = 0; i < params.length; i++) {
+                    var pair = params[i].split("=");
+                    e.values[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+                }
+
+            }
+
+            //Convert empty path to default "/"
+            url = url || "/"
 
             //Exit on empty arguments
             if (!url || !routes) return;
@@ -1287,27 +1189,6 @@ Go = (function () {
 
     /***** Helpers *****/
     {
-        //Disable/Enable sender
-        function toggleSender(sender, enabled) {
-            //Form
-            if ($(sender).is("form")) {
-                if (enabled) sender.find("input,textarea,select,button").removeAttr("disabled", "disabled");
-                else sender.find("input,textarea,select,button,:password").attr("disabled", "disabled");
-            }
-            //TODO: Disable other sender types
-        }
-
-        //Prevent a double click for .7 seconds
-        //Prevents user from making duplicate requests
-        function preventDoubleClick() {
-            if (_clickHold != undefined) return true;
-            else {
-                _clickHold = {};
-                setTimeout(function () { _clickHold = undefined; }, 700);
-            }
-            return false;
-        }
-
         //Confirm
         //Use data-confirm="true", data-confirm="{action}", or data-confirm="{message}"
         function confirmAction(sender) {
@@ -1344,11 +1225,6 @@ Go = (function () {
                 func.call(context, args);
                 return true;
             }
-        }
-
-        //Create a random id
-        function createRandomId() {
-            return Math.random().toString().replace(".", "");
         }
 
         //Get the N argument of a certain type
@@ -1464,6 +1340,164 @@ Go = (function () {
 
 } ());
 
+//HTML Activator
+Go.activator = (function () {
+
+    var activator = {},
+        config = Go.config(),
+        clickHold;
+
+    /***** Public *****/
+
+    activator.run = function (html) {
+
+        //Scroll
+        //TODO: Need to cross-browser test this
+        if (typeof scrollTo === "function") {
+            $("[go-scroll]", html).each(function () {
+                window.scrollTo($(this).offset().top);
+            });
+        }
+
+        //Link click
+        $(config.autoActivateViews ? "a:not([href=#],[href^=#],[href^=javascript],[href^=mailto],[go-deactivate])" : "a:[go-activate]", html).each(function () {
+            //Get link
+            var link = $(this);
+            var url = link.attr("href");
+            if (!url || url == "#") return;
+            //Ensure isn't external link
+            var base = window.location.protocol + "//" + window.location.hostname;
+            if (url && url != "" && url.charAt(0) != "/" && base != url.slice(0, base.length)) {
+                //Open all external links in new windows
+                link.attr("target", "_blank");
+                return;
+            }
+            //Remove any existing click events
+            link.unbind("click");
+            //Modify links to include hash
+            if (config.autoCorrectLinks && url != undefined && url[0] == "/") {
+                url = "#" + url.substr(1);
+                link.attr("href", url);
+            }
+            //Don't attach event if link opens in new window
+            if (link.attr("target") == "_blank") return;
+            //Click
+            link.click(function (clickEvent) {
+                //Prevent default
+                clickEvent.preventDefault();
+                //Prevent duplicate requests
+                if (preventDoubleClick()) return false;
+                //Modify link
+                if (url && url[0] == "#") url = "/" + url.substr(1);
+                //Create ActionEvent object
+                var e = new ActionEvent({
+                    url: url,
+                    sender: link,
+                    clickEvent: clickEvent
+                });
+                //Run action
+                Go.run(e);
+                return false;
+            });
+        });
+
+        //Form submit
+        $(config.autoActivateViews ? "form:not([go-deactivate])" : "form:[go-activate]", html).submit(function (submitEvent) {
+            //Prevent duplicate requests
+            if (preventDoubleClick()) return false;
+            //Locals
+            var form = $(this),                 //Get form
+                e = new ActionEvent({           //Create ActionEvent object
+                    url: form.attr("action"),
+                    sender: form,
+                    isPost: true,
+                    submitEvent: submitEvent
+                });
+            //Return if no ajax
+            if (form.attr("data-ajax") == "false" || form.find(":submit").attr("data-ajax") == "false") return;
+            //Prevent default
+            submitEvent.preventDefault();
+            //Ensure unique ids
+            form.attr("id", Go.utils.createRandomId());
+            //Convert fields to array, exclude filtered items
+            //Array is in format [{name: "...", value: ".."},{name: "...", value: "..."}]
+            //TODO: serializeArray does not always work... need to investigate
+            e.postData = form.find(":input").not(config.submitFilter).serializeArray();
+            //Disable form
+            Go.utils.toggleSender(form, false);
+            //Run action
+            Go.run(e);
+            return false;
+        });
+
+        //Submit button click
+        $(config.autoActivateViews ? ":submit:not([go-deactivate])" : ":submit[go-activate]", html).click(function (e) {
+            //Prevent default
+            e.preventDefault();
+            var form = $(this).parents("form:first");
+            //Return if no ajax
+            if (form.attr("data-ajax") == "false") return;
+            //Submit form
+            form.submit();
+            return false;
+        });
+
+        //Run attribute click
+        $("[go-run]", html).click(function (clickEvent) {
+            //Prevent duplicate requests
+            //TODO: This does not allow radio/checks for some reason
+            //if (preventDoubleClick()) return false;
+            //Create event object
+            var el = $(this),                   //Get clicked element
+                e = new ActionEvent({           //Create ActionEvent object
+                    url: el.attr("go-run"),
+                    sender: el,
+                    clickEvent: clickEvent
+                });
+            //Run action
+            Go.run(e);
+        });
+
+        //Close
+        $("[go-close]", html).click(function () {
+            $(this).closest("[go-update]").remove();
+        });
+
+        //Submit on dropdown change
+        $("select[go-submit]", html).change(function () {
+            $(this).parent("form:first").submit();
+        });
+
+        //Submit on click
+        $("[go-submit]:not(select)", html).click(function () {
+            $(this).parent("form:first").submit();
+        });
+
+        //Autoset focus
+        var el = $("[go-focus]", html);
+        if (el.length > 0) setTimeout(function () { el.first().focus(); }, 100);
+        else setTimeout(function () { $(":input:first:not([go-focus=false])", html).focus(); }, 100);
+
+    };
+
+    return activator;
+
+    /***** Private *****/
+
+    //Prevent a double click for .7 seconds
+    //Prevents user from making duplicate requests
+    //TODO: Add time to config
+    function preventDoubleClick() {
+        if (clickHold != undefined) return true;
+        else {
+            clickHold = {};
+            setTimeout(function () { clickHold = undefined; }, 700);
+        }
+        return false;
+    }
+
+} ());
+
 //Template Renderer
 Go.templates = (function () {
 
@@ -1526,11 +1560,11 @@ Go.templates = (function () {
     function preformatHTML(html) {
 
         html = html
-            .replace(/[ ]{2,}/g, "") //Remove multiple spaces
-            .replace(/<!--(.*?)-->/g, "") //Replace comments
-			.replace(/([\\'])/g, "\\$1") //Replace values with token
-			.replace(/[\r\t\n]/g, " ") //Replace line endings to spaces
-            .replace(/{&gt; /g, "{> "); //Replace {&gt; with {> (for children)
+            .replace(/[ ]{2,}/g, "")        //Remove multiple spaces
+            .replace(/<!--(.*?)-->/g, "")   //Replace comments
+			.replace(/([\\'])/g, "\\$1")    //Replace values with token
+			.replace(/[\r\t\n]/g, " ")      //Replace line endings to spaces
+            .replace(/{&gt; /g, "{> ");     //Replace {&gt; with {> (for children)
 
         return trim(html);
     }
@@ -1542,33 +1576,33 @@ Go.templates = (function () {
         var root = $("<div>" + html + "</div>");
 
         //any attributes
-        root.find("[any]").each(function () {
+        root.find("[go-any]").each(function () {
             var el = $(this);
-            var val = el.attr("any");
-            $(this).before("{? " + val || "this" + "}").after("{/?}").removeAttr("any");
+            var val = el.attr("go-any");
+            $(this).before("{? " + val || "this" + "}").after("{/?}").removeAttr("go-any");
         });
 
         //none attributes
-        root.find("[none]").each(function () {
+        root.find("[go-none]").each(function () {
             var el = $(this);
-            var val = el.attr("none");
+            var val = el.attr("go-none");
             if (!val) val = "this";
-            $(this).before("{? !" + val + "}").after("{/?}").removeAttr("none");
+            $(this).before("{? !" + val + "}").after("{/?}").removeAttr("go-none");
         });
 
         //if attributes
-        root.find("[if]").each(function () {
+        root.find("[go-if]").each(function () {
             var el = $(this);
-            var val = convertConditionExpr(el.attr("if"));
-            el.before("{? " + val + "}").after("{/?}").removeAttr("if");
+            var val = convertConditionExpr(el.attr("go-if"));
+            el.before("{? " + val + "}").after("{/?}").removeAttr("go-if");
         });
 
         //each attributes
-        root.find("[each]").each(function () {
+        root.find("[go-each]").each(function () {
             var el = $(this);
-            var val = el.attr("each");
+            var val = el.attr("go-each");
             if (!val) val = "this";
-            el.before("{~ " + val + "}").after("{/~}").removeAttr("each");
+            el.before("{~ " + val + "}").after("{/~}").removeAttr("go-each");
         });
 
         //Get HTML with markup
@@ -1802,3 +1836,24 @@ Go.loading = (function () {
     }
 
 } ());
+
+//Utilities
+Go.utils = {
+
+    //Create a random id
+    createRandomId: function () {
+        return Math.random().toString().replace(".", "");
+    },
+
+    //Disable/Enable sender
+    toggleSender: function (sender, enabled) {
+        //Form
+        if ($(sender).is("form")) {
+            if (enabled) sender.find("input,textarea,select,button").removeAttr("disabled", "disabled");
+            else sender.find("input,textarea,select,button,:password").attr("disabled", "disabled");
+        }
+        //TODO: Disable other sender types
+    }
+
+};
+

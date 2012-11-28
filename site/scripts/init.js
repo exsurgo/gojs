@@ -86,7 +86,9 @@ Go.on("complete", function (e) {
 //Auto-load controllers
 Go.on("run", function (e) {
 
-    var ctrl = e.values.controller, action = e.values.action;
-    if (ctrl && action) e.require = "controllers/" + ctrl;
+    if (e.values) {
+        var ctrl = e.values.controller, action = e.values.action;
+        if (ctrl && action) e.require = "controllers/" + ctrl;
+    }
 
 });

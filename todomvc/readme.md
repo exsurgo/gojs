@@ -1,3 +1,18 @@
 # GoJS • [TodoMVC](http://todomvc.com)
 
-Documentation coming soon...
+Application file structure:
+
+index.html
+libs
+├── go.js
+└── app.js
+models
+└── todos.js
+controllers
+└── todos.js		
+styles
+└── app.css
+views
+├── footer.html
+├── main.html
+└── row.html
