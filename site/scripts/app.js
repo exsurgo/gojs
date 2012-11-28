@@ -1,37 +1,34 @@
 ﻿
 //Config
 Go.config({
-
     //Settings
     loadingIndicatorCSS: "loading-indicator",
-
     //Resource routes
     scriptRoute: "/gojs/site/scripts/{key}.js",
     styleRoute: "/gojs/site/styles/{key}.css",
     viewRoute: "/gojs/site/views/{key}.html",
-    imageRoute: "/site/images/{key}",
-
-    //Routes
-    routes: [
-        //Home route
-        {
-            route: "/", //Route definition
-            defaults: { controller: "view", action: "display", view: "home" }, //Default values
-            require: "controllers/view" //Required resources
-        },
-        //Default controller/action route
-        {
-            route: "{controller}/{action}"
-        },
-        //Default display view route
-        {
-            route: "{view}",
-            defaults: { controller: "view", action: "display" },
-            require: "controllers/view"
-        }
-    ]
-
+    imageRoute: "/gojs/site/images/{key}"
 });
+
+//Routes
+Go.route([
+    //Home route
+    {
+        route: "/", //Route definition
+        defaults: { controller: "view", action: "display", view: "home" }, //Default values
+        require: "controllers/view" //Required resources
+    },
+    //Default controller/action route
+    {
+        route: "{controller}/{action}"
+    },
+    //Default display view route
+    {
+        route: "{view}",
+        defaults: { controller: "view", action: "display" },
+        require: "controllers/view"
+    }
+]);
 
 //Highlight code
 Go.on("activate", function (e) {

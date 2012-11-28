@@ -5,33 +5,28 @@
 
     <p>
         URL's are routed to controller actions automatically.  The default route is <b>{controller}/{action}</b>,
-        but can be configured as needed.
+        but can be configured as needed using the <b>Go.route()</b> method.
     </p>
 
     <pre class="brush: js">
-        Go.config({
-
-            //Routes
-            routes: [
-                //Home route
-                {
-                    route: "/", //Route definition
-                    defaults: { controller: "app", action: "start" }, //Default values
-                    require: "controllers/app" //Ensure controller is loaded
-                },
-                //Another route
-                {
-                    route: "/myroute/{action}/{anotherparam}", //Route definition
-                    defaults: { controller: "mycontroller" }, //Default values
-                    require: "controllers/mycontroller" //Ensure controller is loaded
-                },                
-                //Default route
-                {
-                    route: "{controller}/{action}"
-                }
-            ]
-
-        });
+        Go.route([
+            //Home route
+            {
+                route: "/", //Route definition
+                defaults: { controller: "app", action: "start" }, //Default values
+                require: "controllers/app" //Ensure controller is loaded
+            },
+            //Another route
+            {
+                route: "/myroute/{action}/{anotherparam}", //Route definition
+                defaults: { controller: "mycontroller" }, //Default values
+                require: "controllers/mycontroller" //Ensure controller is loaded
+            },                
+            //Default route
+            {
+                route: "{controller}/{action}"
+            }
+        ]);
     </pre>
 
 </div>

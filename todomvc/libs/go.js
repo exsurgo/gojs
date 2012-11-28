@@ -1,10 +1,15 @@
 
 /*
-*   GoJS 0.7.85
+*   GoJS 0.7.86
 *   Dependencies: jQuery 1.5+
 *
 *   GoJS is a full-featured MVC framework that provides support for controllers, actions, views, models, routing,
 *   deep linking, back/front button support, loading indication, resource loading, template rendering, and more.
+*
+*   (c) 2012 Sterling Nichols
+*   Distributed under the MIT license.
+*   For all details and documentation:
+*   http://exsurgo.github.com/gojs
 */
 
 //Public objects
