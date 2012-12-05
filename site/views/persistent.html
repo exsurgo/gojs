@@ -1,0 +1,54 @@
+﻿
+<div data-title="About GoJS">
+
+    <h1>Persistent Objects</h1>
+
+    <p>
+        GoJS features automatic storage and retrieval of objects from local or session storage.
+    </p>
+    
+    <p>
+        Using the <b>Go.persist(name, value)</b> method, objects are marked for persistence.   
+        In the example below, a new object myObject" is created under the namespace "app", with a set of initial values.  
+        When the page is unloaded, the object is automatically stored in session or local storage.  On the next page 
+        load, the object is automatically retrieved and loaded into memory.
+    </p>    
+
+    <pre class="brush: js;">
+        Go.persist("app.myObject", {
+            someNumber: 124,
+            someString: "My Persistent Object",
+            someBool: true,
+            someArray: [...]
+        })
+    </pre>
+
+    <hr class="space" />
+
+    <h4>Basic Storage</h4>
+
+    <p>
+        GoJS also provides several helpful methods for working with session/local storage.  The <b>Go.store(key, value, permanent)</b>
+        method will serialize and store some value, while the <b>Go.retrieve(key)</b> method will retrieve the value.
+    </p> 
+
+    <pre class="brush: js;">
+        
+        //Store in session storage
+        Go.store("my-object-key", {...});
+
+        //Store in local storage
+        Go.store("my-object-key", {...}, true);
+
+        //Retrieve from either session or local storage
+        Go.retrieve("my-object-key");
+
+    </pre>
+
+    <p>
+        There are a couple benefits in using GoJS for storage over sessionStorage/localStorage directlly.  
+        First, session/local storage only supports strings, while GoJS handles the serialization automatically.
+        Second, the retrieve method searches both local and session storages with a single call.
+    </p>
+
+</div>

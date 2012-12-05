@@ -1,13 +1,17 @@
 ﻿
+
 //Config
 Go.config({
     //Settings
     loadingIndicatorCSS: "loading-indicator",
+    prefixControllerNameToViews: false,
     //Resource routes
     scriptRoute: "/gojs/site/scripts/{key}.js",
     styleRoute: "/gojs/site/styles/{key}.css",
+    controllerRoute: "/gojs/site/controllers/{key}.js",
+    modelRoute: "/gojs/site/models/{key}.js",
     viewRoute: "/gojs/site/views/{key}.html",
-    imageRoute: "/gojs/site/images/{key}"
+    imageRoute: "/gojs/site/images/{key}",
 });
 
 //Routes
@@ -15,8 +19,7 @@ Go.route([
     //Home route
     {
         route: "/", //Route definition
-        defaults: { controller: "view", action: "display", view: "home" }, //Default values
-        require: "controllers/view" //Required resources
+        defaults: { controller: "view", action: "display", view: "home" } //Default values
     },
     //Default controller/action route
     {
@@ -25,67 +28,21 @@ Go.route([
     //Default display view route
     {
         route: "{view}",
-        defaults: { controller: "view", action: "display" },
-        require: "controllers/view"
+        defaults: { controller: "view", action: "display" }
     }
 ]);
 
-//Highlight code
-Go.on("activate", function (e) {
-
-    //Code sections are PRE tags
-    var code = $("pre").hide();
-    if (code.length) {
-        Go.require({
-            scripts: "shBrushJScript, shBrushXml",
-            styles: "shCore, shCoreDefault",
-            require: "shCore"
-        },
-        function () {
-            //Code syntax highlighting
-            SyntaxHighlighter.defaults["toolbar"] = false;
-            SyntaxHighlighter.highlight(document.body);
-            //Replace temp fixes
-            //Keep scripts from being run and script highlighter from breaking
-            $("code:contains(script-temp)").text("script");
-            $("code:contains(body-temp)").text("body");
-            $("code:contains(head-temp)").text("head");
-            $("code:contains(html-temp)").text("html");
-            $("code:contains(href-temp)").text("href");
-            //Remote empty attributes 'attr=""'
-            $("code:contains(=)").each(function () {
-                var el = $(this), sibling = el.next();
-                if (sibling.text() == '""') {
-                    el.remove();
-                    sibling.remove();
-                }
-            });
-            code.show();
-        });
-    }
-
-});
-
-//Set menu
-Go.on("complete", function (e) {
-
-    //Set active menu
-    if (e.action && e.action.updater == "content" && e.url) {
-        var menuLink = $("a[href='#" + e.url.replace("/", "") + "']");
-        if (menuLink.length) {
-            $("li.active").removeClass("active");
-            menuLink.parent().addClass("active");
-        }
-    }
-
-});
-
 //Auto-load controllers
-Go.on("run", function (e) {
+Go.on("beforerun", function (e) {
 
     if (e.values) {
         var ctrl = e.values.controller, action = e.values.action;
-        if (ctrl && action) e.require = "controllers/" + ctrl;
+        if (ctrl && action) e.require = { controllers: ctrl };
     }
 
+});
+
+//Store home content
+Go.on("ready", function () {
+    homeContent = $("[go-content]").html();
 });

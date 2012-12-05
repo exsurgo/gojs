@@ -1,5 +1,5 @@
 ﻿
-var TodoController = new Controller("todos", {
+var TodosController = new Controller("todos", {
 
     main: new Action({
         require: {
@@ -8,36 +8,51 @@ var TodoController = new Controller("todos", {
         title: "GoJS • TodoMVC",
         updater: "content",
         view: "main",
-        model: function (e) {
-            return Todos.query(e.values.query);
+        model: function () {
+            return Todos.query(this.values.query)
         },
         complete: function (e) {
-            e.controller.query = e.values.query;
-            TodoController.updateView();
-        }
+            TodosController.updateView(e.values);
+        },
+        focus: "#new-todo"
     }),
 
     create: new Action({
-        updater: {
-            name: "append",
-            target: "#todo-list"
-        },
+        updater: "append: #todo-list",
         view: "row",
         model: function (e) {
-            var title = e.sender.find("input").val()
+            var title = this.sender.find("input").val()
             return Todos.create(title);
         },
         complete: function (e) {
             e.sender[0].reset();
-            setTimeout(function () { e.sender.find("input").focus() }, 100);
-            TodoController.updateView();
+            TodosController.updateView(e.values);
+        },
+        focus: "#new-todo"
+    }),
+
+    edit: new Action({
+        hide: "#todo-{id} .view",
+        show: "#todo-{id} .edit",
+        focus: "#todo-{id} :text"
+    }),
+
+    save: new Action({
+        updater: "replace",
+        view: "row",
+        model: function () {
+            var id = this.values.id,
+                title = this.sender.find("input").val(),
+                todo = Todos.get(id);
+            todo.title = title;
+            return todo;
         }
     }),
 
     destroy: function (e) {
         Todos.destroy(e.values.id);
         e.sender.closest("li").remove();
-        TodoController.updateView();
+        TodosController.updateView(e.values);
     },
 
     toggle: function (e) {
@@ -47,14 +62,14 @@ var TodoController = new Controller("todos", {
             id = e.values.id,
             li = check.closest("li"),
             completed = li.hasClass("completed"),
-            todo = Todos.get(id);
+            todo = Todos.where("id=='{0}'", id)[0];
 
         //Toggle completion status
         li.toggleClass("completed");
         todo.completed = !completed;
 
         //Update footer
-        TodoController.updateView();
+        TodosController.updateView(e.values);
 
     },
 
@@ -68,46 +83,43 @@ var TodoController = new Controller("todos", {
             //Locals
             var li = $(this),
                 id = li.data("id"),
-                checkbox = li.find(":checkbox")[0],
-                todo = Todos.get(id);
+                checkbox = li.find(":checkbox"),
+                todo = Todos.where("id=='{0}'", id)[0];
 
             //Set complete
             if (isChecked) {
                 li.addClass("completed");
-                checkbox.checked = true;
+                checkbox.prop("checked", true);
                 todo.completed = true;
             }
 
             //Set incomplete
             else {
                 li.removeClass("completed");
-                checkbox.checked = false;
+                checkbox.prop("checked", false);
                 todo.completed = false;
             }
 
         });
 
         //Update footer
-        TodoController.updateView();
+        TodosController.updateView(e.values);
+
     },
 
     clearCompleted: function (e) {
         Todos.destroyCompleted();
-        TodoController.main();
+        TodosController.main();
     },
 
     updateView: new Action({
-        updater: {
-            name: "insert",
-            target: "#footer-pane"
-        },
+        updater: "insert: #footer-pane",
         view: "footer",
         model: Todos.counts,
         complete: function (e) {
-
+            
             //Set toggle all checkbox
-            var checkbox = $("#toggle-all"),
-                model = e.model;
+            var checkbox = $("#toggle-all"), model = e.model;
             if (model.total == 0) checkbox.hide();
             else {
                 checkbox.show();
@@ -115,12 +127,6 @@ var TodoController = new Controller("todos", {
                 else checkbox[0].checked = false;
             }
 
-            //Set active links
-            //TODO: Implement this with templates
-            $("#filters a").removeClass("selected");
-            if (e.controller.query == "active") $("#query-active").addClass("selected");
-            else if (e.controller.query == "completed") $("#query-completed").addClass("selected");
-            else $("#query-all").addClass("selected");
         }
     })
 

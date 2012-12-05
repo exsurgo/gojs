@@ -3,13 +3,13 @@
 	<span id="todo-count"><strong>{remaining}</strong> item left</span>
 	<ul id="filters">
 		<li>
-			<a id="query-all" href="/">All</a>
+			<a id="query-all" class="{values.query == undefined ? 'selected' : ''}" href="/">All</a>
 		</li>
 		<li>
-			<a id="query-active" href="/?query=active">Active</a>
+			<a id="query-active" class="{values.query == 'active' ? 'selected' : ''}" href="/?query=active">Active</a>
 		</li>
 		<li>
-			<a go-if="completed" id="query-completed" href="/?query=completed">Completed</a>
+			<a go-if="completed" id="query-completed" class="{values.query == 'completed' ? 'selected' : ''}" href="/?query=completed">Completed</a>
 		</li>
 	</ul>
 	<button go-if="completed" id="clear-completed" go-run="/todos/clearcompleted">Clear completed ({completed})</button>

@@ -1,66 +1,65 @@
 ﻿
-var Todos = (function () {
+var Todos;
 
-    var model = {},
-        todos = [];
+(function () {
 
-    model.get = function (id) {
-        var len = todos.length;
-        for (var i = 0; i < len; i++) {
-            if (id == todos[i].id) return todos[i];
-        }
+    // Mark object a peristent
+    // GoJ will automatically load and save
+    // this object on page load and unload
+    // Assign the initial value as []
+    Go.persist("Todos", []);
+
+    // Public methods
+    
+    Todos.get = function (id) {
+        return Todos.where("id=='{0}'", id)[0];
     };
 
-    model.query = function (query) {
-
-        //Run query
-        var result = [];
-        $(todos).each(function (i, value) {
-            if (query == "active" && !value.completed) result.push(value);
-            else if (query == "completed" && value.completed) result.push(value);
-            else if (!query) result.push(value);
-        });
-
-        //Return result
-        return { todos: result, count: todos.length, query: query };
-
+    Todos.each = function (callback) {
+        $.each(Todos, callback);
     };
 
-    model.counts = function () {
+    Todos.where = function (condition, values) {
+        condition = Go.format(condition, values);
+        var func = "var __=[]; \r\n$(this).each(function(i,v) { \r\n with(v) {\r\n if (" + condition + ") __.push(v); \r\n} \r\n}); \r\nreturn __";
+        return (new Function(func)).call(Todos);
+    };
+
+    Todos.query = function (type) {
+        if (type == "active") return Todos.where("completed != true");
+        else if (type == "completed") return Todos.where("completed == true");
+        else return Todos;
+    };
+
+    Todos.counts = function () {
         var counts = {
-            remaining: 0,
-            completed: 0
+            remaining: Todos.where("completed == false").length,
+            completed: Todos.where("completed == true").length
         };
-        $.each(todos, function () {
-            if (this.completed) counts.completed++;
-            else counts.remaining++;
-        });
         counts.total = counts.remaining + counts.completed;
         return counts;
     };
 
-    model.create = function (title) {
+    Todos.create = function (title) {
         var todo = {
             title: title,
-            id: Math.random().toString().replace(".", ""),
+            id: Go.createRandomId(),
             completed: false
         };
-        todos.push(todo);
+        Todos.push(todo);
         return todo;
     };
 
-    model.destroy = function (id) {
-        $.each(todos, function (i) {
-            if (this.id == id) todos.splice(i, 1);
+    Todos.destroy = function (id) {
+        Todos.each(function (i) {
+            if (this.id == id) Todos.splice(i, 1);
         });
     };
 
-    model.destroyCompleted = function (id) {
-        $(todos).each(function (i, value) {
-            if (value.completed) Todos.destroy(value.id);
+    Todos.destroyCompleted = function (id) {
+        Todos.each(function(i, value) {
+            if (value && value.completed) Todos.destroy(value.id);
         });
     };
-
-    return model;
 
 })();

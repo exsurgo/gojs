@@ -10,6 +10,7 @@
     <script src="site/scripts/go.js"></script>
     <script src="site/scripts/app.js"></script>
     <script src="site/scripts/updaters.js"></script>
+    <script src="site/controllers/view.js"></script>
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -48,8 +49,11 @@
                         <li><a href="/templates">Templates</a></li>
                         <li><a href="/resources">Loading Resources</a></li>
                         <li><a href="/routing">Routing</a></li>
+                        <li><a href="/persistent">Storage & Persistence</a></li>
                         <li><a href="/events">Events</a></li>
+                        <li><a href="/server">Server Communication</a></li>
                         <li><a href="/loadingindicator">Loading Indicator</a></li>
+                        <li><a href="/extensible">Extensibility</a></li>
                         <li><a href="/todomvc">TodoMVC Example</a></li>
                         <li><a href="/api">API</a></li>
                     </ul>
@@ -57,6 +61,91 @@
             </div>
             <!--Main Content-->
             <div go-content class="span10">
+
+                <div id="home" data-title="GoJS - JavaScript MVC Framework">
+                    <div class="hero-unit" style="padding-top: 35px; padding-bottom: 35px;">
+                        <h1>GoJS... Make your apps Go!!</h1>
+                        <p>
+                            GoJS is a full-featured JavaScript MVC framework that aims to reduce code and speed up development.
+                        </p>
+                        <p>
+                            <a class="btn btn-primary btn-large marg-right" href="/helloworld">Learn More »</a>
+                            <a class="btn btn-large marg-right" href="https://github.com/exsurgo/gojs">View Source »</a>
+                            <a class="btn btn-large marg-right" href="/todomvc">TodoMVC »</a>
+                            <b>v 0.7 Alpha</b>
+                        </p>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <h3 class="check-mark">Client-Side MVC</h3>
+                            <p>
+                                Build sophisticated, singe-page Model-View-Controller apps with minimal effort.
+                            </p>
+                            <p><a class="btn" href="/helloworld">View details »</a></p>
+                        </div>
+                        <div class="span4">
+                            <h3 class="check-mark">Templates</h3>
+                            <p>
+                                Automatically store and render views with a powerful rendering engine.  
+                            </p>
+                            <p><a class="btn" href="/templates">View details »</a></p>
+                        </div>
+                        <div class="span4">
+                            <h3 class="check-mark">Resource Loading</h3>
+                            <p>
+                                Dynamically load server-side resources such as scripts, styles, views and images, on-demand.
+                            </p>
+                            <p><a class="btn" href="/resources">View details »</a></p>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <h3 class="check-mark">Automatic Updates</h3>
+                            <p>
+                                Automatically retrieve HTML from the server and update the DOM.
+                            </p>
+                            <p><a class="btn" href="/updates">View details »</a></p>
+                        </div>
+                        <div class="span4">
+                            <h3 class="check-mark">Routing</h3>
+                            <p>
+                                URL's are automatically routed to controller actions via predefined routes. 
+                            </p>
+                            <p><a class="btn" href="/routing">View details »</a></p>
+                        </div>
+                        <div class="span4">
+                            <h3 class="check-mark">Deep Linking</h3>
+                            <p>
+                                Built-in support for deep-linking and front/back button navigation.
+                            </p>
+                            <p><a class="btn" href="/deeplinking">View details »</a></p>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <h3 class="check-mark">Server Communication</h3>
+                            <p>
+                                GoJS provides seamless integration with data services and remoting. 
+                            </p>
+                            <p><a class="btn" href="/server">View details »</a></p>
+                        </div>
+                        <div class="span4">
+                            <h3 class="check-mark">Storage & Persistence</h3>
+                            <p>
+                                Automatically store and retrieve persistent objects between page loads.
+                            </p>
+                            <p><a class="btn" href="/persistent">View details »</a></p>
+                        </div>
+                        <div class="span4">
+                            <h3 class="check-mark">Extensible & Modular</h3>
+                            <p>
+                                Hooks, global & local events, and modules allow for maximum extensibility.
+                            </p>
+                            <p><a class="btn" href="/extensible">View details »</a></p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
         <hr class="space" />

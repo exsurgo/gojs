@@ -1,10 +1,13 @@
 ﻿
-<li data-id="{id}" class="{completed ? 'completed' : ''}">
-	<div class="view">
+<li id="todo-{id}" data-id="{id}" class="{completed ? 'completed' : ''}">
+	<div class="view" go-dblclick="/todos/edit/{id}"> 
 		<input go-if="completed" class="toggle" type="checkbox" go-run="/todos/toggle/{id}" checked>
 		<input go-if="!completed" class="toggle" type="checkbox" go-run="/todos/toggle/{id}">
 		<label>{title}</label>
 		<button class="destroy" go-run="/todos/destroy/{id}"></button>
 	</div>
-	<input class="edit" value="{title}">
+    <form action="/todos/save/{id}">
+	    <input type="text" class="edit" name="title" value="{title}">
+    </form>
 </li>
+
