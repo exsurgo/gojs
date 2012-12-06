@@ -7,6 +7,10 @@ body { padding-top: 60px; padding-bottom: 40px; min-width: 800px; } /* TODO: Add
 .sidebar-nav { padding: 9px 0; }
 .nav-list a { font-size: 1.1em; }
 
+/* buttons */
+.btn { color: #222222; }
+.btn-primary { color: #ffffff; }
+
 /* tag - used above code sections */
 .tag { font-size: .8em; color: #777; display: inline-block; margin-top: 4px; }
 

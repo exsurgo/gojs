@@ -14,7 +14,7 @@ var ViewController = new Controller("view", {
         // Home
         if (e.url == "/") {
             Go.update("content", homeContent);
-            document.title = $(ctrl.homeHTML).attr("data-title");
+            document.title = "GoJS - JavaScript MVC Framework";
             Go.hideLoading();
             Go.setAddress("/");
         }
@@ -56,11 +56,11 @@ var ViewController = new Controller("view", {
                 });
             }
 
-            // Hide loading
-            Go.hideLoading();
-
             // Set title
             document.title = $("[data-title]:first").attr("data-title");
+
+            // Hide loading
+            Go.hideLoading();
 
         });
 
